@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blocks>
+  <block id="28c2848f4740f85fcc719678504b6d1f" category="summary">您必須設定匯出原則、以便在NFS伺服器和NetApp儲存設備上的VMware vStorage API for Array Integration（VAAI）儲存功能之間提供法規遵循。在VMware中、Volume匯出受到儲存虛擬機器（SVM、先前稱為Vserver）上套用的匯出原則的限制。ONTAP</block>
+  <block id="3ca7940081986321247378c8971483d2" category="doc">設定ONTAP 匯出原則以供支援透過NFS的VAAI</block>
+  <block id="135b308ed83c53f1516b7c754566d1c4" category="list-title">開始之前</block>
+  <block id="a0bcc354fa396eb75b84d4d02d9b7718" category="list-text">相關NFS磁碟區必須允許NFSv4呼叫。</block>
+  <block id="81bd63e6e41408704c76c863a34ea963" category="list-text">root使用者必須保留為主要使用者。</block>
+  <block id="f3f9c8b334ab43ae4a02968721968177" category="list-text">所有互連的父磁碟區都必須允許使用NFSv4。</block>
+  <block id="169893540e481d950c2ea6f83c19c278" category="list-text">VAAI支援選項必須在相關的NFS伺服器上設定。</block>
+  <block id="d3b17ff817b0c51315f99bafc8e26760" category="paragraph">您可以針對多種條件和傳輸協定設定不同的匯出原則。</block>
+  <block id="f3a29486bed19a90f2da6d007818b427" category="list-title">步驟</block>
+  <block id="0c07530e6b80f7d242af8944697c7fcb" category="list-text">如果未建立匯出原則、請在VMware ESXi主機的根Volume中為SVM建立匯出原則、其中包含SVM名稱、原則名稱、預設規則索引、傳輸協定等：</block>
+  <block id="a281c08ab625c701854dd4a5b02d8f23" category="paragraph">「vserver匯出原則規則modify -vserver vserver名稱-policyname預設-rueindex規則索引-protocol NFSv3\|NFSv4」</block>
+  <block id="70432d21c84231dc621b8775791be8da" category="list-text">修改匯出原則、以允許NFSv3和NFSv3傳輸協定符合下列條件：</block>
+  <block id="0be60a7d83c1b91093247b32008e2271" category="list-text">您必須針對個別的ESX伺服器和磁碟區、設定具有所有相關存取權限的匯出原則規則。</block>
+  <block id="c287667cced8db78caa0010cbc3b6f8a" category="list-text">您必須將rw、RO和超級用戶的值設定為「SYS」或「any」、才能進行用戶端比對。</block>
+  <block id="821f78872960ff3d624c50c7af895a19" category="list-text">您必須已允許NFSv3和NFSv3傳輸協定。</block>
+  <block id="2be50b060bf9196c69f84b064ef8d336" category="paragraph">匯出原則中的存取傳輸協定設定如下：</block>
+  <block id="95ae52d90454f4e2dfa2fc228fbdd7b0" category="list-text">存取傳輸協定=「NFS」（包括所有NFS版本）</block>
+  <block id="4d4aed4d533554a21cdb8e566180e66a" category="list-text">存取傳輸協定=「NFSv3」、「NFSv4」（NFSv3用於NFSv3資料存放區存取）和NFSv4（NFSv4用於NFSv4.1資料存放區存取）。</block>
+  <block id="9aa76cd2560b0a0c4f856ced220c2b26" category="paragraph">下列命令會顯示SVM詳細資料並設定匯出原則：</block>
+  <block id="2663c9e43716235cc5be7f82db47d29b" category="paragraph">任何原則變更都會套用至使用相關原則的所有磁碟區、不會限制為NFS資料存放區磁碟區。</block>
+  <block id="6486c417bf9c55f6f4cfcce6cf052e12" category="list-text">修改匯出原則、將超級使用者設為具有下列條件的SYS：</block>
+  <block id="bbd0fba21fb02513be355c2c122c019e" category="list-text">您必須已設定交會路徑中的所有父磁碟區、並具有根磁碟區的讀取存取權限、NFSv4存取權限、以及存取交會磁碟區的VAAI存取權限。</block>
+  <block id="e6ce85fec1798fdaac07f26925e16929" category="paragraph">SVM根Volume的超級使用者會針對相關用戶端設定為SYS。</block>
+  <block id="a00987e9122193686f425d5b92f69433" category="list-text">您必須具有SVM根磁碟區的拒絕寫入權限。下列命令會顯示SVM詳細資料並設定匯出原則：</block>
+  <block id="7383404c82f19532ca1ae39f882437ac" category="paragraph">根使用者會保留、因為超級使用者會設為SYS。因此、root使用者可以存取具有交會路徑/VAAI的磁碟區。</block>
+  <block id="5ecfb3f09d557dd0b083daf8fa2c8e4e" category="paragraph">如果根磁碟區與VMware_VAAI磁碟區之間的交會中有其他磁碟區、則這些磁碟區應該會針對個別用戶端設定原則規則、將超級使用者設為SYS或any。</block>
+  <block id="c06676376a8fd8cb681319de1b138ec8" category="paragraph">在大多數情況下、根磁碟區會使用原則名稱設為預設的原則。</block>
+  <block id="078b17dae2441e6af63b3c20a7546ae8" category="paragraph">任何原則變更都會套用至使用相關原則的所有磁碟區、而且不會限制為根磁碟區。</block>
+  <block id="2db4e6a4f6bd313f133e8782768263ab" category="list-text">啟用vStorage功能：「NFS modify -vserver vserver_name VMware -vStorage enabled_</block>
+  <block id="c9a163326247e50e0595bbb1eb7fe53c" category="paragraph">SVM上的NFS服務需要啟用vStorage功能。</block>
+  <block id="1979b5fa591e7f384e495c144fd00e88" category="list-text">確認已啟用VStorage功能：</block>
+  <block id="a09f72b32eb33d59d53f3a5fc8e31c94" category="paragraph">「NFS show -Fields vStorage」</block>
+  <block id="76f4b5cd4699c9fde627ad73d421ee52" category="paragraph">輸出應顯示「啟用」：</block>
+  <block id="177de6400c2cce3c75e75d84f9ee17a5" category="list-text">建立匯出原則：</block>
+  <block id="662101238aa84e945c980e15357c039f" category="paragraph">「vserver匯出原則規則建立」</block>
+  <block id="35fe1217cae1d0b6e7d29fda2cfe9903" category="paragraph">下列命令會建立匯出原則規則：</block>
+  <block id="d238d1f50ab0ddeaaa09380a04bac848" category="list-text">顯示匯出原則：</block>
+  <block id="d1adc53af9357da290baa38b065a4c43" category="paragraph">「Vserver匯出原則展示」</block>
+  <block id="310ccf00aa1239adf7da52ab9f8a1cfb" category="paragraph">下列命令會顯示匯出原則：</block>
+  <block id="c41b14124d59529e2f27f5427dedeb36" category="summary">整合ESXi主機上安裝的VMware虛擬磁碟庫的軟體程式庫。</block>
+  <block id="b5cbb0e717e173a2a024067db337cc0c" category="doc">適用於VMware VAAI的NetApp NFS外掛程式文件</block>
+  <block id="9edbef0767827c25b7a8afbb9f6654db" category="paragraph">有了這個外掛程式、您就能體驗更高效能的複製作業、更快完成。此外、您還能獲得整合ESXi主機上安裝的VMware虛擬磁碟庫的軟體庫。</block>
+  <block id="bf98a381de0a256c298bebafc4de50a1" category="summary">安裝NFS外掛程式涉及在NetApp儲存系統上啟用VMware vStorage for NFS、驗證VMware主機上是否已啟用VAAI（適用於陣列整合的VMware vStorage API）、下載並安裝VMware ESXi主機上的外掛程式、以及驗證安裝是否成功。</block>
+  <block id="2cd449575a6433677571f502b2c3ce6e" category="doc">安裝適用於VMware VAAI的NetApp NFS外掛程式</block>
+  <block id="1d58a6eb2e13dd3689b7f44320319066" category="list-text">必須在儲存系統上啟用NFSv3或NFSv4.1。</block>
+  <block id="6e8842288bd1b400a94a0e07df702993" category="admonition">NFSv4.1僅適用於ONTAP VMware 9.0系統、NFSv3同時適用於7-Mode和Cluster-Mode系統。</block>
+  <block id="039911735aef4adf36915090e19821ae" category="list-text">VMware vSphere 7.0U1必須可供使用。</block>
+  <block id="b95982609bcaa66a9948629f87fe8589" category="inline-xref">步驟10</block>
+  <block id="1ba3ec4f2d49189c689f2f920f134c43" category="paragraph">如需啟用NFS及使用VMware vSphere的其他資訊、請參閱中所列的手冊 <block ref="8f4290af71411856897bbab4daf63b37" category="inline-xref-macro-rx"></block>。</block>
+  <block id="bbe48fb854ea022537208eeeff822f91" category="list-title">關於這項工作</block>
+  <block id="6f4a225b29c0975663d0e4b9e1f4547f" category="inline-xref">步驟1.</block>
+  <block id="65059694f74420f1a8022d6728d593d9" category="list-text">如果您使用VMware ESXi CLI來安裝外掛程式、請從開始 <block ref="a21f3b2098abe7275d608a6a9c864195" category="inline-xref-macro-rx"></block>。</block>
+  <block id="2d5ce426423eeeead4f35769cd8b1b27" category="inline-xref">步驟3.</block>
+  <block id="3ffc3ab365a79adb8adcff39380edf83" category="list-text">如果您使用適用於VMware vSphere的虛擬儲存主控台（VSC）來安裝外掛程式、請從開始 <block ref="6f5e80c5f38b7c17bfcb05f65cf8fc44" category="inline-xref-macro-rx"></block>。</block>
+  <block id="c4ca4238a0b923820dcc509a6f75849b" category="inline-xref">1.</block>
+  <block id="c81e728d9d4c2f636f067f89cc14862c" category="inline-xref">2.</block>
+  <block id="fb84e1c7b3725d40b76631ba1eee97b1" category="paragraph">VSC可在儲存控制器上啟用VMware vStorage for NFS、並在ESXi主機上啟用VAAI（步驟） <block ref="9493c6647e1f9209426db866558b9c51" category="inline-xref-macro-rx"></block> 透過 <block ref="989843df4f2b99286183effb1dd535fc" category="inline-xref-macro-rx"></block> 此程序的最新資訊。</block>
+  <block id="e4fb07b450976b3304f3201d5ad999b6" category="list-text">如果您使用ONTAP VMware vSphere的VMware解決工具來安裝外掛程式、請從開始 <block ref="6f5e80c5f38b7c17bfcb05f65cf8fc44" category="inline-xref-macro-rx"></block>。</block>
+  <block id="edb7bef0507977fee035ede5263c0af2" category="paragraph">*使用的IP位址慣例：*</block>
+  <block id="1b717bef1bd876cf4ac712d6c2e16838" category="list-text">格式為192．168．42．2xx的IP位址是指ESXi伺服器VMkernel連接埠。</block>
+  <block id="d954214cd3f9a7e8baf4a4e05cca4fef" category="list-text">格式為192．168．42．6x的IP位址是指Data ONTAP 以7-Mode運作的系統。</block>
+  <block id="f841fda56776ddab948bea75303f2c2f" category="list-text">IP位址為192．168．42．8倍、是指ONTAP 在整個系統上的儲存虛擬機器（SVM、先前稱為vserver）。</block>
+  <block id="0bd6a283b9a46c2b90e3fb5657c9f5da" category="list-text">[[step1]]啟用VMware vStorage for NFS：</block>
+  <block id="67e197628ee63a9336509b8031677e89" category="cell">如果您使用...</block>
+  <block id="c1325f6903ebb5ebb2bb519a73ddb1b0" category="cell">然後...</block>
+  <block id="d41d8cd98f00b204e9800998ecf8427e" category="doc"></block>
+  <block id="de134183bea5df515a6756a539ce6f18" category="paragraph">CLI ONTAP</block>
+  <block id="c842bffb66dcdc5b972bbe3806e1acc4" category="paragraph">在SVM上啟用VMware vStorage for NFS：「vserver NFS modify–vserver vserver_name -vStorage enabled'」是SVM的名稱。</block>
+  <block id="86ed5a61f48bcf34b144541178a9d125" category="paragraph">7-Mode CLI</block>
+  <block id="33979ab73dfc05bead46f62dd940cb20" category="paragraph">在儲存系統上啟用VMware vStorage for NFS：「options nfs、vStorage、enable on」</block>
+  <block id="d2ec93485d6eee295517b184e4d865b1" category="paragraph">適用於vFiler單元的7-Mode CLI</block>
+  <block id="b671f3d5fe5611645439610765306dff" category="paragraph">在MultiStore 託管VMware NFS資料存放區的VMware vCenter檔案管理器單元上安裝NetApp NFS外掛式vStorage for NFS：「vFiler執行vFiler_name選項nfs.vStorage.enable on」</block>
+  <block id="523b8c395b4782b100a432b78cf7bf82" category="list-text">[[step2]]確認每個ESXi主機上已啟用VAAI。</block>
+  <block id="859fdcf37593d727a4f59d5b7abb03a4" category="paragraph">在VMware vSphere 5.0及更新版本中、VAAI預設為啟用。</block>
+  <block id="41562a9885b30f2d4d0409feec112301" category="paragraph">VMware ESXi CLI</block>
+  <block id="cffa1dac759d2fa45a77578ec36fb45b" category="list-text">驗證是否已啟用VAAI：「esxcfg-advcfg -g /DataMover / HardwareAcceleratedMove」（esxcfg-advcfg -g /DataMover / HardwareAcceleratedInit）</block>
+  <block id="be7fc77cfd7eafe6e9487a977430f561" category="paragraph">如果啟用VAAI、這些命令會顯示下列輸出：</block>
+  <block id="933beed06ed133197bfe285c76b7ff48" category="list-text">如果未啟用VAAI、請啟用VAAI：「esxcfg-advcfg -s 1 /DataMover / HardwareAcceleratedInit」「esxcfg-advcfg -s 1 /DataMover / HardwareAcceleratedMove Move」</block>
+  <block id="7ec1eeb3c8010fa1ec0cdb4377f644ea" category="paragraph">這些命令會顯示下列輸出：</block>
+  <block id="049c3503e6d434744d04bb8e3b7f39be" category="paragraph">vSphere用戶端</block>
+  <block id="a270592232d9d6514ce0ee979df39631" category="list-text">登入vCenter Server。</block>
+  <block id="04c95cacfbf82cdde2b91c70395fd401" category="list-text">針對每個ESXi伺服器、按一下伺服器名稱。</block>
+  <block id="2b24db43f6f18905e8b2c060fc78ec98" category="list-text">在「組態」索引標籤的「軟體」區段中、按一下「*進階設定*」。</block>
+  <block id="9be42b6b8c7cd7aa6b610841e1cfbf79" category="list-text">選取* DataMover *、然後確認「DataMover」、「HardwareAcceleratedMove」和「Data Mover」參數設定為1。</block>
+  <block id="74efc7a80f728081c4c5dffea69a6e04" category="list-text">[[step3]下載適用於VMware VAAI的NetApp NFS外掛程式：</block>
+  <block id="ea193ae4c3d51a911f7315ec65bc32df" category="inline-link">適用於VMware VAAI的NetApp NFS外掛程式下載</block>
+  <block id="fb17ba4a99b09467f9c74b9e2e118576" category="list-text">請前往下載頁面、網址為<block ref="65095c4704b8f4c7de538e0714fe91ec" category="inline-link-rx"></block>。</block>
+  <block id="fe7c02072f421eec45e6b3d6a4f22a84" category="list-text">下載2.0版及vSphere 7.0U1及更新版本的最新軟體版本。</block>
+  <block id="aa138e612a93a8ba8b0894444e154798" category="list-text">使用下列命令在ESXi主機上安裝外掛程式：</block>
+  <block id="ffb9bd6fd201fa872c732a77697dff9c" category="paragraph">「esxcli軟體元件套用-d /&lt;tmp&gt;//&lt;sare_path\&gt;/&lt;下載外掛程式檔案版本\&gt;.Zip」</block>
+  <block id="b8c172cbcf6752c33f19da0dce7c36e3" category="paragraph">其中，「&lt;sip_path&gt;'是下載檔案位置的路徑，而「&lt;download-plugin-file-version」是下載檔案的名稱。</block>
+  <block id="33d39932b49b03dd01884f8dafa83003" category="list-text">執行下列命令以完成安裝：</block>
+  <block id="1aff16ddc088e52eb042b0cb7f757cfb" category="paragraph">Check Alignment of PHs&gt;"etc/init.d/VAAA-NASD start"</block>
+  <block id="6a0e7f9e8f08992284d207c6e71368f7" category="paragraph">Check Alignment of PHs&gt;"etc/init.d/VAAI - NASD停止"</block>
+  <block id="c2e0793b7a849210f05eefa6d3ed65fc" category="list-text">確認已在VMware ESXi命令列的主機上成功安裝外掛程式：</block>
+  <block id="771ba422c8c68985f737cf0888b8ad1d" category="paragraph">《esxcli軟體元件清單》</block>
+  <block id="7219cab90334f7ef06cd35e2bcf898bb" category="paragraph">外掛程式會在安裝及重新開機後自動運作。</block>
+  <block id="5a0d025781cdb77b413f4f619cfd0db1" category="paragraph">使用這些命令可確保元件與vSphere的全新vLCM功能保持相容、此功能可從7.0x及更新版本取得。</block>
+  <block id="1d96a4dcdde75c4e2e89f925ecbe362e" category="list-text">如果您要在新的主機系統上安裝外掛程式、或ONTAP 是執行VMware的伺服器已新設定、請在使用VAAI的ESXi伺服器上、為根磁碟區和每個NFS資料存放區磁碟區建立或修改匯出原則規則 <block ref="6614d749bd815cce9652fb687efa84f1" category="inline-link-macro-rx"></block>。</block>
+  <block id="0311352681d769565e8b831eb800910b" category="paragraph">如果您使用Data ONTAP 以7-Mode運作的功能、請跳過此步驟。</block>
+  <block id="024af1758c4cacb3ad788e1fc0093065" category="paragraph">您可以使用匯出原則、將對磁碟區的存取限制在特定用戶端。VAAI複本卸載作業的匯出原則需要NFSv4、因此您可能需要修改SVM上資料存放區磁碟區的匯出原則規則。如果您在資料存放區上使用NFS以外的傳輸協定、請確認在匯出規則中設定NFS並不會移除其他傳輸協定。</block>
+  <block id="e36c291cc4eb06f69078bce9a1f8c962" category="cell">如果您使用...</block>
+  <block id="8d2662a9ca62f4dc20a4f97b872f58c5" category="paragraph">針對使用VAAI的ESXi伺服器、將「NFS」設定為每個匯出原則規則的存取傳輸協定：「vserver匯出原則規則modify -vserver VS1 -policyname MyPolicy -rueindex 1 -傳輸協定NFS -rwrwrRule krb5|krb5i| any -rorrorrule krb5|krb5i」</block>
+  <block id="ea8ebf645588fe3f13e376c68337f3ad" category="paragraph">在下列範例中：</block>
+  <block id="0b9068ecd0651bdb57ce4c018c1e7455" category="list-text">《VS1》是SVM的名稱。</block>
+  <block id="a2293bfc0d631349795b9bade6d07005" category="list-text">「輸入」是匯出原則的名稱。</block>
+  <block id="ce75b12c88818155edadea982e751c55" category="list-text">「1」是規則的索引編號。</block>
+  <block id="8401173a9c3e4cf3af7fc935baa22d59" category="list-text">「NFS」包括NFSv3和NFSv3傳輸協定。</block>
+  <block id="3bd95d42e0e2974cf0801ead211ea45f" category="list-text">RO（唯讀）和RW（讀寫）的安全樣式為krb5、krb5i或any。</block>
+  <block id="6ad5e0a20f49ad6a370454bb3afc9a9e" category="paragraph">系統管理程式ONTAP</block>
+  <block id="429967c315f871c1cfc6eab4d40ac195" category="list-text">在「Home（主頁）」索引標籤中、按兩下適當的叢集。</block>
+  <block id="4632418052c7e8ea45ec3aacd263e628" category="list-text">展開左側導覽窗格中的儲存虛擬機器（SVM）階層。</block>
+  <block id="4d4674159d5197b421336dd2d287e061" category="admonition">如果您使用的是3.1之前的System Manager版本、則會使用詞彙Vservers、而非階層中的Storage Virtual Machines。</block>
+  <block id="bf466c7b406d1a8ce527949882e5d4ef" category="list-text">在導覽窗格中、選取具有啟用VAAI的資料存放區的儲存虛擬機器（SVM）、然後按一下*原則*&gt;*匯出原則*。</block>
+  <block id="4ddbde9e87bce8ce72ecc216368b8a0c" category="list-text">在「匯出原則」視窗中、展開匯出原則、然後選取規則索引。</block>
+  <block id="19019c13d84b1f8462c766c0987ccd7e" category="paragraph">使用者介面並未指定資料存放區已啟用VAAI。</block>
+  <block id="1230dd799e049f8ecc0662d9bdc08146" category="list-text">按一下*修改規則*以顯示「修改匯出規則」對話方塊。</block>
+  <block id="58e85423546b794a1c71ca9387300b8a" category="list-text">在*存取傳輸協定*下、選取* NFS*以啟用所有NFS版本。</block>
+  <block id="a72cc47fad7d1846d19b085d2e77e5ba" category="list-text">按一下「*確定*」。</block>
+  <block id="7714147f560840391e6e489fba841be4" category="list-text">如果您使用Data ONTAP 以7-Mode運作的功能、請執行「exportfs」命令以匯出Volume路徑。</block>
+  <block id="931043dc28ff99663fd7a88ace5a39f1" category="paragraph">如果您使用ONTAP 的是資訊技術、請跳過此步驟。</block>
+  <block id="20514f4ef4b2ecf02e2a9ed04cc6f36d" category="inline-link">《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP</block>
+  <block id="4cd8e8ed7076316854376865caa78af1" category="paragraph">如需「exportfs」命令的詳細資訊、請參閱<block ref="a7a4d9fbc8e40171329ee3167349133a" category="inline-link-rx"></block>。</block>
+  <block id="ff9fbbecd46a0bb898c3a37562cba9ba" category="paragraph">匯出磁碟區時、您可以指定主機名稱或IP位址、子網路或網路群組。您可以為「RW」和「root」選項指定IP位址、子網路或主機。例如：</block>
+  <block id="b601154cd7bd31804dab33d0205b3d59" category="paragraph">您也可以擁有以分號分隔的清單。例如：</block>
+  <block id="43567a05f0b7aaa853ebbee1fb7f199d" category="paragraph">如果您匯出具有實際旗標的Volume、匯出路徑應具有單一元件、以便正常運作複本卸載。例如：</block>
+  <block id="0c8d07701ae1824f42d90b30a7e1666e" category="admonition">複本卸載不適用於多重元件匯出路徑。</block>
+  <block id="f4fbabc76fed54aeb7056189f57a06cf" category="list-text">在ESXi主機上掛載NFSv3或NFSv4.1資料存放區：</block>
+  <block id="06a0c6bdff38aaea20edd04befaa7cf4" category="list-text">若要掛載NFSv3資料存放區、請執行下列命令：</block>
+  <block id="eea31f969123e8c01c6206105f168dbc" category="paragraph">《esxcli storage NFS add -H 192．168．42.80 -s share_name -v volume．name》（esxcli儲存NFS add -H 192．168．42.80 -s share_name -v volume</block>
+  <block id="fa81050228a7979a3643f93064374458" category="paragraph">若要掛載NFSv4.1資料存放區、請執行下列命令：</block>
+  <block id="9b10cdd24aabd0e283cb4bb7a93fa6bf" category="paragraph">「esxcli儲存設備nfs41 add -H 192.168.42.80- s share_name -v volume名稱-A auth_SYS / SEC_KRB5/SEC_KRB5I」</block>
+  <block id="b3defb89c39d7c46224465f10d9676fd" category="paragraph">以下範例顯示ONTAP 要在安裝資料存放區時執行的命令、以及產生的輸出：</block>
+  <block id="f50d1fc9b6e567177fd7e24b7cebf13a" category="paragraph">對於Data ONTAP 以7-Mode執行支援的系統、NFS Volume名稱前面會加上「/vol'」字首。以下範例顯示用於掛載資料存放區的7-Mode命令、以及產生的輸出：</block>
+  <block id="fdde8a813cc897a0235421b8bc176ad8" category="list-text">若要管理NAS掛載：</block>
+  <block id="903ca6b068d7144bb3c1f4d6bfc2af74" category="paragraph">「esxcfg-NAS -l」</block>
+  <block id="9a940b51cdd2b2d508cffc6eecff9e32" category="paragraph">將顯示下列輸出：</block>
+  <block id="6f4d47f8c8d7727aa5492bec4c200dc1" category="paragraph">完成後、磁碟區便會掛載、並可在/vmfs/volumes目錄中使用。</block>
+  <block id="5d86e677f2f7a3fcfe5e676211793109" category="list-text">[[step10]使用下列其中一種方法、驗證掛載的資料存放區是否支援VAAI：</block>
+  <block id="600f0fcedd4bec226e6bb389e48e9d44" category="paragraph">ESXi CLI</block>
+  <block id="f914d297eddb56f343f32285bde99edc" category="paragraph">「vmkfsools -ph /vmfs/volumes/ONC_SRC/'會顯示下列輸出：</block>
+  <block id="4828d21c9bbab0d33e38b4f614088419" category="list-text">按一下「* ESXi伺服器*&gt;*組態*&gt;*儲存設備*」。</block>
+  <block id="e6177607b7b959c72232448dcbff1437" category="list-text">檢視啟用VAAI的NFS資料存放區的Hardware Acceleration（硬體加速）欄。</block>
+  <block id="48479cae19359032ca558ab40e766d8b" category="paragraph">如需VMware vStorage over NFS的詳細資訊、請參閱下列內容：</block>
+  <block id="6f37bae0644ff45757cfbdc025575308" category="inline-link">SFC 9 NFS參考總覽ONTAP</block>
+  <block id="31c7b98065ebcc9bb646d65a31554c86" category="paragraph"><block ref="31c7b98065ebcc9bb646d65a31554c86" category="inline-link-rx"></block></block>
+  <block id="1cb6b8cf0e15b5ac07411b9b7a490e47" category="paragraph"><block ref="1cb6b8cf0e15b5ac07411b9b7a490e47" category="inline-link-rx"></block></block>
+  <block id="e719123b280714497e885444c73f4d05" category="paragraph">如需設定磁碟區和磁碟區空間的詳細資訊、請參閱下列內容：</block>
+  <block id="48661ca2c38172b10371fe966f66da49" category="inline-link">使用CLI進行邏輯儲存管理總覽</block>
+  <block id="4b10da8d27b7c6ed1a851c109f41b9ca" category="paragraph"><block ref="4b10da8d27b7c6ed1a851c109f41b9ca" category="inline-link-rx"></block></block>
+  <block id="25253afb20178012e025c46d720e471f" category="inline-link-macro">《適用於7-Mode的資訊儲存管理指南》（英文）Data ONTAP</block>
+  <block id="61daba862d2376f8b93ec7ef7d49fd75" category="paragraph"><block ref="61daba862d2376f8b93ec7ef7d49fd75" category="inline-link-macro-rx"></block></block>
+  <block id="6051dbe11c9fa8130af42b60ae66abc1" category="paragraph">如需VMware vSphere生命週期管理程式的詳細資訊、也可以使用vCenter Web用戶端GUI在多個主機上安裝及管理外掛程式、請參閱下列內容：</block>
+  <block id="c7de9d22e1f240785cd33a59ab2501bf" category="inline-link-macro">關於VMware vSphere生命週期管理程式</block>
+  <block id="949d7ff889763466db0527cc213b1407" category="paragraph"><block ref="949d7ff889763466db0527cc213b1407" category="inline-link-macro-rx"></block></block>
+  <block id="c725edf2ef5380bd2a6417570f562385" category="paragraph">如需在VMware環境中使用VSC來配置NFS資料存放區及建立虛擬機器複本的相關資訊、請參閱下列內容：</block>
+  <block id="b8e6c41a6ffba0d701c83cf094867e7a" category="inline-link-macro">《Virtual Storage Console 6.2.1 for VMware vSphere安裝與管理指南》</block>
+  <block id="ac6c54c75c97de348bf2b96539b333cd" category="paragraph"><block ref="ac6c54c75c97de348bf2b96539b333cd" category="inline-link-macro-rx"></block></block>
+  <block id="d0138273a9c078c63e6084c7a44264e0" category="paragraph">如需更多關於使用ONTAP VMware vSphere的功能來配置NFS資料存放區及在VMware環境中建立虛擬機器複本的資訊、請參閱下列內容：</block>
+  <block id="46c4d9bfa1c229940459326940489ab0" category="inline-link-macro">VMware vSphere文件的相關工具ONTAP</block>
+  <block id="7ebb78c9ff6537bf758fcaf4454224fb" category="paragraph"><block ref="7ebb78c9ff6537bf758fcaf4454224fb" category="inline-link-macro-rx"></block></block>
+  <block id="47ae61fb7877ca4ff133394b75bbec70" category="paragraph">如需使用NFS資料存放區及執行複製作業的詳細資訊、請參閱下列內容：</block>
+  <block id="b13dcdadb494dbca247bd930b7d1cd96" category="inline-link-macro">VMware vSphere儲存設備</block>
+  <block id="23824440fc7fb7db9a130560bbb0f369" category="paragraph"><block ref="23824440fc7fb7db9a130560bbb0f369" category="inline-link-macro-rx"></block></block>
+  <block id="6197846c485d1298a47650886df4fd1c" category="list-text">如果您使用Data ONTAP 以7-Mode運作的功能進行支援、請執行「顯示」命令、啟用資料存放區磁碟區以進行複本卸載和重複資料刪除。</block>
+  <block id="cd950bbb6ad069b72e227946d088f103" category="paragraph">如需參考資料、請檢視Volume的效率詳細資料：ONTAP</block>
+  <block id="9502ad25405d9e7a6e956b85b44e2b67" category="paragraph">「Volume Effiveiv. show -vserver vserver_name -volume volume volume Volume _name」</block>
+  <block id="6c00a578fa5efbe2777203b3cc135def" category="admonition">對於僅供使用的系統、預設會啟用Volume Eff效率。AFF AFF</block>
+  <block id="02b7374228dd75ca16d1ad24b559e889" category="paragraph">如果命令輸出未顯示任何已啟用儲存效率的磁碟區、請啟用效率：</block>
+  <block id="527c1ce66e27bc62a475464fc01ba55d" category="paragraph">「-vserver vserver_name -volume volume volume volume．name」上的Volume Effiveiv</block>
+  <block id="86a451460ce6857e870c4751322edb39" category="paragraph">如果您使用VSC或ONTAP VMware vSphere的支援功能來設定磁碟區、請跳過此步驟、因為預設會在資料存放區上啟用磁碟區效率。</block>
+  <block id="0831e0b927f21d4b42cc48055383e97b" category="paragraph">如需在資料存放區磁碟區上啟用重複資料刪除的詳細資訊、請參閱下列內容：</block>
+  <block id="34f5c90d63f7671b078024b7c9005693" category="paragraph">使用NFS外掛程式空間保留和複本卸載功能、讓例行工作更有效率：</block>
+  <block id="aba025f9027bbfd4b3f9f8299f617a35" category="list-text">在NetApp傳統Volume或FlexVol VMware Volume上以複雜的虛擬機器磁碟（VMDK）格式建立虛擬機器、並在建立時保留檔案空間。</block>
+  <block id="b2c409659c8a7c494ff523bddfb1f19b" category="list-text">複製NetApp磁碟區內或跨NetApp磁碟區的現有虛擬機器：</block>
+  <block id="94dba74cb05f8a4f56ee0c2037e1617f" category="list-text">資料存放區是位於同一個節點上相同SVM上的磁碟區。</block>
+  <block id="b2ea5d37750dbd29ccc07733e3befafc" category="list-text">資料存放區是位於不同節點上相同SVM上的磁碟區。</block>
+  <block id="b092579e56e3ea512e53820f2c9fb793" category="list-text">屬於相同7-Mode系統或VFiler裝置上磁碟區的資料存放區。</block>
+  <block id="208931a06561a452023c11db44400baf" category="list-text">執行複製作業的完成速度比非VAAI複製作業快、因為它們不需要經過ESXi主機。</block>
+  <block id="e9c44bbfd795a5d63d74c6a77afee70d" category="summary">法律聲明提供版權聲明、商標、專利等存取權限。</block>
+  <block id="30d965eef5ba25c6b9998ae38270b43e" category="doc">法律聲明</block>
+  <block id="6016a2b341113bf496b719905398ecd2" category="section-title">版權</block>
+  <block id="09e95b77ffe81fe465a83ba99efad5c8" category="paragraph"><block ref="09e95b77ffe81fe465a83ba99efad5c8" category="inline-link-rx"></block></block>
+  <block id="126a02652da6de02962cf1b654fd6376" category="section-title">商標</block>
+  <block id="c4ce4761e466527d26b3e3d5ed1006fd" category="paragraph">NetApp 、 NetApp 標誌及 NetApp 商標頁面上列出的標章均為 NetApp 、 Inc. 的商標。其他公司與產品名稱可能為其各自所有者的商標。</block>
+  <block id="7aa531e9acfe2b98e34d2c92fe9846ff" category="paragraph"><block ref="7aa531e9acfe2b98e34d2c92fe9846ff" category="inline-link-rx"></block></block>
+  <block id="be89498d2f8a22ce47c02ba9795fe2af" category="section-title">專利</block>
+  <block id="d0b19d36be2c5f16e9aef46c8a452d3d" category="paragraph">如需最新的 NetApp 擁有專利清單、請參閱：</block>
+  <block id="d7f1fbcf9ce4e42f705add574d262b2c" category="paragraph"><block ref="d7f1fbcf9ce4e42f705add574d262b2c" category="inline-link-rx"></block></block>
+  <block id="56c34c6410dd45c5cec44149ad0ce037" category="section-title">隱私權政策</block>
+  <block id="fc248f74f5e36542f7f5627b8610e9a3" category="paragraph"><block ref="fc248f74f5e36542f7f5627b8610e9a3" category="inline-link-rx"></block></block>
+  <block id="24efa7ee4511563b16144f39706d594f" category="section-title">注意</block>
+  <block id="9b73989307c1975dfa4d5e1581e4afe8" category="paragraph">通知檔案提供有關 NetApp 軟體所使用之協力廠商版權與授權的資訊。</block>
+  <block id="6cd1b6ee7bdd5546c48ec8d3c4788ba4" category="inline-link-macro">適用於VMware VAAI的NetApp NFS外掛程式注意事項</block>
+  <block id="c16c6d451761c08c80d8d01b2843cffb" category="paragraph"><block ref="c16c6d451761c08c80d8d01b2843cffb" category="inline-link-macro-rx"></block></block>
+  <block id="a3100bf3334206028c894a5568ddcf09" category="summary">說明新功能、升級附註、修正問題、已知限制及已知問題。</block>
+  <block id="0a874eb9be2efc8299ca77a37d9c153f" category="doc">適用於VMware VAAI的NetApp NFS外掛程式版本資訊</block>
+  <block id="a3c89f65adac53b9fc8f1c007df5e8d1" category="paragraph">。 <block ref="5587782ec3bf4b059cb9bda76c73dcb9" category="inline-link-macro-rx"></block> 說明新功能、升級附註、修正問題、已知限制及已知問題。</block>
+  <block id="9974abf4679b4ac4f12d0dbfbfb114b8" category="sidebar">適用於VMware VAAI文件的NetApp NFS外掛程式</block>
+  <block id="5dd03e8d039863e563e049be198c3fd3" category="sidebar">版本資訊</block>
+  <block id="9f1444ca3aac0720c37a8103593b319f" category="sidebar">安裝與設定</block>
+  <block id="d648f2a68a54fd1b3329efc3cf24d29c" category="sidebar">法律聲明</block>
+</blocks>

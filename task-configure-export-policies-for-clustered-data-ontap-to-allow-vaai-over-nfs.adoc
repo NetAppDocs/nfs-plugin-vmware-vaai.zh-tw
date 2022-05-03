@@ -1,0 +1,183 @@
+---
+permalink: task-configure-export-policies-for-clustered-data-ontap-to-allow-vaai-over-nfs.html 
+sidebar: sidebar 
+keywords: configure, export, policies, policy, compliance, vmware, vstorage, api, array, integration, vaai, storage, feature, nfs, server, ontap, svm, vserver, vstorage 
+summary: 您必須設定匯出原則、以便在NFS伺服器和NetApp儲存設備上的VMware vStorage API for Array Integration（VAAI）儲存功能之間提供法規遵循。在VMware中、Volume匯出受到儲存虛擬機器（SVM、先前稱為Vserver）上套用的匯出原則的限制。ONTAP 
+---
+= 設定ONTAP 匯出原則以供支援透過NFS的VAAI
+:allow-uri-read: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+您必須設定匯出原則、以便在NFS伺服器和NetApp儲存設備上的VMware vStorage API for Array Integration（VAAI）儲存功能之間提供法規遵循。在VMware中、Volume匯出受到儲存虛擬機器（SVM、先前稱為Vserver）上套用的匯出原則的限制。ONTAP
+
+.開始之前
+* 相關NFS磁碟區必須允許NFSv4呼叫。
+* root使用者必須保留為主要使用者。
+* 所有互連的父磁碟區都必須允許使用NFSv4。
+* VAAI支援選項必須在相關的NFS伺服器上設定。
+
+
+您可以針對多種條件和傳輸協定設定不同的匯出原則。
+
+.步驟
+. 如果未建立匯出原則、請在VMware ESXi主機的根Volume中為SVM建立匯出原則、其中包含SVM名稱、原則名稱、預設規則索引、傳輸協定等：
++
+「vserver匯出原則規則modify -vserver vserver名稱-policyname預設-rueindex規則索引-protocol NFSv3\|NFSv4」
+
+. 修改匯出原則、以允許NFSv3和NFSv3傳輸協定符合下列條件：
++
+** 您必須針對個別的ESX伺服器和磁碟區、設定具有所有相關存取權限的匯出原則規則。
+** 您必須將rw、RO和超級用戶的值設定為「SYS」或「any」、才能進行用戶端比對。
+** 您必須已允許NFSv3和NFSv3傳輸協定。
++
+匯出原則中的存取傳輸協定設定如下：
+
++
+*** 存取傳輸協定=「NFS」（包括所有NFS版本）
+*** 存取傳輸協定=「NFSv3」、「NFSv4」（NFSv3用於NFSv3資料存放區存取）和NFSv4（NFSv4用於NFSv4.1資料存放區存取）。
++
+下列命令會顯示SVM詳細資料並設定匯出原則：
+
++
+[listing]
+----
+cm3240c-rtp::> vol show -vserver vmware -volume vmware_VAAI -fields policy (volume
+show)
+vserver volume       policy         junction-path
+------- ------       -------        -------------
+vmware  vmware_VAAI  vmware_access  /VAAI
+----
+
+
++
+[listing]
+----
+cm3240c-rtp::> export-policy rule show -vserver vmware -policyname vmware_access-ruleindex 2(vserver export-policy rule show)
+
+Vserver: vmware
+Policy Name: vmware_access
+Rule Index: 1
+Access Protocol: nfs3,nfs4 (can also be nfs for NFSv3)
+Client Match Spec: 192.168.1.6
+RO Access Rule: sys
+RW Access Rule: sys
+User ID To Which Anonymous Users Are Mapped: 65534
+Superuser Security Flavors: sys
+Honor SetUID Bits In SETATTR: true
+Allow Creation of Devices: true
+----
+
+
++
+任何原則變更都會套用至使用相關原則的所有磁碟區、不會限制為NFS資料存放區磁碟區。
+
+. 修改匯出原則、將超級使用者設為具有下列條件的SYS：
++
+** 您必須已設定交會路徑中的所有父磁碟區、並具有根磁碟區的讀取存取權限、NFSv4存取權限、以及存取交會磁碟區的VAAI存取權限。
++
+SVM根Volume的超級使用者會針對相關用戶端設定為SYS。
+
+** 您必須具有SVM根磁碟區的拒絕寫入權限。下列命令會顯示SVM詳細資料並設定匯出原則：
++
+[listing]
+----
+cm3240c-rtp::> vol show -vserver vmware -volume vmware_root -fields policy,
+junction-path (volume show)
+vserver volume policy  junction-path
+------- ------ ------- -------------
+vmware  vmware_root  root_policy /
+----
++
+[listing]
+----
+
+cm3240c-rtp::> export-policy rule show -vserver vmware -policyname root_policy
+-ruleindex 1 (vserver export-policy rule show)
+
+Vserver: vmware
+Policy Name: root_policy
+Rule Index: 1
+Access Protocol: nfs  <--- as in scenario 1, set to nfs or nfs3,nfs4
+Client Match Spec: 192.168.1.5
+RO Access Rule: sys
+RW Access Rule: never  <--- this can be never for security reasons
+User ID To Which Anonymous Users Are Mapped: 65534
+Superuser Security Flavors: sys   <--- this is required for VAAI to be set, even
+in the parent volumes like vsroot
+Honor SetUID Bits In SETATTR: true
+Allow Creation of Devices: true
+----
++
+根使用者會保留、因為超級使用者會設為SYS。因此、root使用者可以存取具有交會路徑/VAAI的磁碟區。
+
++
+如果根磁碟區與VMware_VAAI磁碟區之間的交會中有其他磁碟區、則這些磁碟區應該會針對個別用戶端設定原則規則、將超級使用者設為SYS或any。
+
++
+在大多數情況下、根磁碟區會使用原則名稱設為預設的原則。
+
++
+任何原則變更都會套用至使用相關原則的所有磁碟區、而且不會限制為根磁碟區。
+
+
+
+. 啟用vStorage功能：「NFS modify -vserver vserver_name VMware -vStorage enabled_
++
+SVM上的NFS服務需要啟用vStorage功能。
+
+. 確認已啟用VStorage功能：
++
+「NFS show -Fields vStorage」
+
++
+輸出應顯示「啟用」：
+
++
+[listing]
+----
+cm3240c-rtp::> nfs show -fields vstorage
+vserver vstorage
+------- --------
+vmware  enabled
+----
+. 建立匯出原則：
++
+「vserver匯出原則規則建立」
+
++
+下列命令會建立匯出原則規則：
+
++
+[listing]
+----
+User1-vserver2::> protocol export-policy rule create -vserver vs1
+-policyname default -clientmatch 0.0.0.0/0 -rorule any -rwrule any -superuser
+any -anon 0
+
+User1-vserver2::> export-policy rule show vserver export-policy rule show)
+Virtual      Policy          Rule    Access   Client                RO
+Server       Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+vs1          default         1       any      0.0.0.0/0             any
+
+User1-vserver2::>
+----
+. 顯示匯出原則：
++
+「Vserver匯出原則展示」
+
++
+下列命令會顯示匯出原則：
+
++
+[listing]
+----
+User1-vserver2::> export-policy show (vserver export-policy show)
+Virtual Server   Policy Name
+---------------  -------------------
+vs1              default
+----
+

@@ -1,0 +1,14 @@
+---
+permalink: index.html 
+sidebar: sidebar 
+keywords: installation, guide, nfs, vaai, vmware, esxi, plug-in 
+summary: 整合ESXi主機上安裝的VMware虛擬磁碟庫的軟體程式庫。 
+---
+= 適用於VMware VAAI的NetApp NFS外掛程式文件
+:allow-uri-read: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+有了這個外掛程式、您就能體驗更高效能的複製作業、更快完成。此外、您還能獲得整合ESXi主機上安裝的VMware虛擬磁碟庫的軟體庫。

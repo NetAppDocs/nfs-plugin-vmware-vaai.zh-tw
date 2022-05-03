@@ -1,0 +1,429 @@
+---
+permalink: task-install-netapp-nfs-plugin-for-vmware-vaai.html 
+sidebar: sidebar 
+keywords: install, netapp, nfs, plug-in, vmware, vaai, involve, enable, netapp, vstorage, api, array, integration, installation, download, nfsv4.1 
+summary: 安裝NFS外掛程式涉及在NetApp儲存系統上啟用VMware vStorage for NFS、驗證VMware主機上是否已啟用VAAI（適用於陣列整合的VMware vStorage API）、下載並安裝VMware ESXi主機上的外掛程式、以及驗證安裝是否成功。 
+---
+= 安裝適用於VMware VAAI的NetApp NFS外掛程式
+:allow-uri-read: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+安裝NFS外掛程式涉及在NetApp儲存系統上啟用VMware vStorage for NFS、驗證VMware主機上是否已啟用VAAI（適用於陣列整合的VMware vStorage API）、下載並安裝VMware ESXi主機上的外掛程式、以及驗證安裝是否成功。
+
+.開始之前
+* 必須在儲存系統上啟用NFSv3或NFSv4.1。
++
+
+NOTE: NFSv4.1僅適用於ONTAP VMware 9.0系統、NFSv3同時適用於7-Mode和Cluster-Mode系統。
+
+* VMware vSphere 7.0U1必須可供使用。
+
+
+如需啟用NFS及使用VMware vSphere的其他資訊、請參閱中所列的手冊 <<step10,步驟10>>。
+
+.關於這項工作
+* 如果您使用VMware ESXi CLI來安裝外掛程式、請從開始 <<step1,步驟1.>>。
+* 如果您使用適用於VMware vSphere的虛擬儲存主控台（VSC）來安裝外掛程式、請從開始 <<step3,步驟3.>>。
++
+VSC可在儲存控制器上啟用VMware vStorage for NFS、並在ESXi主機上啟用VAAI（步驟） <<step1,1.>> 透過 <<step2,2.>> 此程序的最新資訊。
+
+* 如果您使用ONTAP VMware vSphere的VMware解決工具來安裝外掛程式、請從開始 <<step3,步驟3.>>。
+
+
+*使用的IP位址慣例：*
+
+* 格式為192．168．42．2xx的IP位址是指ESXi伺服器VMkernel連接埠。
+* 格式為192．168．42．6x的IP位址是指Data ONTAP 以7-Mode運作的系統。
+* IP位址為192．168．42．8倍、是指ONTAP 在整個系統上的儲存虛擬機器（SVM、先前稱為vserver）。
+
+
+.步驟
+. [[step1]]啟用VMware vStorage for NFS：
++
+[cols="30,60"]
+|===
+| 如果您使用... | 然後... 
+
+
+ a| 
+CLI ONTAP
+ a| 
+在SVM上啟用VMware vStorage for NFS：「vserver NFS modify–vserver vserver_name -vStorage enabled'」是SVM的名稱。
+
+
+
+ a| 
+7-Mode CLI
+ a| 
+在儲存系統上啟用VMware vStorage for NFS：「options nfs、vStorage、enable on」
+
+
+
+ a| 
+適用於vFiler單元的7-Mode CLI
+ a| 
+在MultiStore 託管VMware NFS資料存放區的VMware vCenter檔案管理器單元上安裝NetApp NFS外掛式vStorage for NFS：「vFiler執行vFiler_name選項nfs.vStorage.enable on」
+
+|===
+. [[step2]]確認每個ESXi主機上已啟用VAAI。
++
+在VMware vSphere 5.0及更新版本中、VAAI預設為啟用。
+
++
+[cols="30,60"]
+|===
+| 如果您使用... | 然後... 
+
+
+ a| 
+VMware ESXi CLI
+ a| 
+.. 驗證是否已啟用VAAI：「esxcfg-advcfg -g /DataMover / HardwareAcceleratedMove」（esxcfg-advcfg -g /DataMover / HardwareAcceleratedInit）
++
+如果啟用VAAI、這些命令會顯示下列輸出：
+
++
+[listing]
+----
+~ #  esxcfg-advcfg -g /DataMover/HardwareAcceleratedMove
+Value of HardwareAcceleratedMove is **1**
+~ # esxcfg-advcfg -g /DataMover/HardwareAcceleratedInit
+Value of HardwareAcceleratedInit is **1**
+----
+.. 如果未啟用VAAI、請啟用VAAI：「esxcfg-advcfg -s 1 /DataMover / HardwareAcceleratedInit」「esxcfg-advcfg -s 1 /DataMover / HardwareAcceleratedMove Move」
++
+這些命令會顯示下列輸出：
+
++
+[listing]
+----
+~ # esxcfg-advcfg -s 1 /DataMover/HardwareAcceleratedInit
+Value of HardwareAcceleratedInit is **1**
+~ #  esxcfg-advcfg -s 1 /DataMover/HardwareAcceleratedMove
+Value of HardwareAcceleratedMove is **1**
+----
+
+
+
+
+ a| 
+vSphere用戶端
+ a| 
+.. 登入vCenter Server。
+.. 針對每個ESXi伺服器、按一下伺服器名稱。
+.. 在「組態」索引標籤的「軟體」區段中、按一下「*進階設定*」。
+.. 選取* DataMover *、然後確認「DataMover」、「HardwareAcceleratedMove」和「Data Mover」參數設定為1。
+
+
+|===
+. [[step3]下載適用於VMware VAAI的NetApp NFS外掛程式：
++
+.. 請前往下載頁面、網址為 https://mysupport.netapp.com/site/products/all/details/nfsplugin-vmware-vaai/downloads-tab["適用於VMware VAAI的NetApp NFS外掛程式下載"^]。
+.. 下載2.0版及vSphere 7.0U1及更新版本的最新軟體版本。
+
+
+. 使用下列命令在ESXi主機上安裝外掛程式：
++
+「esxcli軟體元件套用-d /<tmp>//<sare_path\>/<下載外掛程式檔案版本\>.Zip」
+
++
+其中，「<sip_path>'是下載檔案位置的路徑，而「<download-plugin-file-version」是下載檔案的名稱。
+
+. 執行下列命令以完成安裝：
++
+Check Alignment of PHs>"etc/init.d/VAAA-NASD start"
+
++
+Check Alignment of PHs>"etc/init.d/VAAI - NASD停止"
+
+. 確認已在VMware ESXi命令列的主機上成功安裝外掛程式：
++
+《esxcli軟體元件清單》
+
++
+外掛程式會在安裝及重新開機後自動運作。
+
++
+使用這些命令可確保元件與vSphere的全新vLCM功能保持相容、此功能可從7.0x及更新版本取得。
+
+. 如果您要在新的主機系統上安裝外掛程式、或ONTAP 是執行VMware的伺服器已新設定、請在使用VAAI的ESXi伺服器上、為根磁碟區和每個NFS資料存放區磁碟區建立或修改匯出原則規則 link:task-configure-export-policies-for-clustered-data-ontap-to-allow-vaai-over-nfs.html["設定ONTAP 匯出原則以供支援透過NFS的VAAI"]。
++
+如果您使用Data ONTAP 以7-Mode運作的功能、請跳過此步驟。
+
++
+您可以使用匯出原則、將對磁碟區的存取限制在特定用戶端。VAAI複本卸載作業的匯出原則需要NFSv4、因此您可能需要修改SVM上資料存放區磁碟區的匯出原則規則。如果您在資料存放區上使用NFS以外的傳輸協定、請確認在匯出規則中設定NFS並不會移除其他傳輸協定。
+
++
+[cols="30,60"]
+|===
+| 如果您使用... | 然後... 
+
+
+ a| 
+CLI ONTAP
+ a| 
+針對使用VAAI的ESXi伺服器、將「NFS」設定為每個匯出原則規則的存取傳輸協定：「vserver匯出原則規則modify -vserver VS1 -policyname MyPolicy -rueindex 1 -傳輸協定NFS -rwrwrRule krb5|krb5i| any -rorrorrule krb5|krb5i」
+
+在下列範例中：
+
+** 《VS1》是SVM的名稱。
+** 「輸入」是匯出原則的名稱。
+** 「1」是規則的索引編號。
+** 「NFS」包括NFSv3和NFSv3傳輸協定。
+** RO（唯讀）和RW（讀寫）的安全樣式為krb5、krb5i或any。
++
+[listing]
+----
+cluster1::> vserver export-policy rule modify -vserver vs1
+-policyname mypolicy -ruleindex 1 -protocol nfs -rwrule krb5|krb5i|any -rorule krb5|krb5i|any
+----
+
+
+
+
+ a| 
+系統管理程式ONTAP
+ a| 
+.. 在「Home（主頁）」索引標籤中、按兩下適當的叢集。
+.. 展開左側導覽窗格中的儲存虛擬機器（SVM）階層。
++
+
+NOTE: 如果您使用的是3.1之前的System Manager版本、則會使用詞彙Vservers、而非階層中的Storage Virtual Machines。
+
+.. 在導覽窗格中、選取具有啟用VAAI的資料存放區的儲存虛擬機器（SVM）、然後按一下*原則*>*匯出原則*。
+.. 在「匯出原則」視窗中、展開匯出原則、然後選取規則索引。
++
+使用者介面並未指定資料存放區已啟用VAAI。
+
+.. 按一下*修改規則*以顯示「修改匯出規則」對話方塊。
+.. 在*存取傳輸協定*下、選取* NFS*以啟用所有NFS版本。
+.. 按一下「*確定*」。
+
+
+|===
+. 如果您使用Data ONTAP 以7-Mode運作的功能、請執行「exportfs」命令以匯出Volume路徑。
++
+如果您使用ONTAP 的是資訊技術、請跳過此步驟。
+
++
+如需「exportfs」命令的詳細資訊、請參閱 https://library.netapp.com/ecm/ecm_download_file/ECMP1401220["《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP"^]。
+
++
+匯出磁碟區時、您可以指定主機名稱或IP位址、子網路或網路群組。您可以為「RW」和「root」選項指定IP位址、子網路或主機。例如：
+
++
+[listing]
+----
+sys1> exportfs -p root=192.168.42.227 /vol/VAAI
+----
++
+您也可以擁有以分號分隔的清單。例如：
+
++
+[listing]
+----
+sys1> exportfs -p root=192.168.42.227:192.168.42.228 /vol/VAAI
+----
++
+如果您匯出具有實際旗標的Volume、匯出路徑應具有單一元件、以便正常運作複本卸載。例如：
+
++
+[listing]
+----
+sys1> exportfs -p actual=/vol/VAAI,root=192.168.42.227 /VAAI-ALIAS
+----
++
+
+NOTE: 複本卸載不適用於多重元件匯出路徑。
+
+. 在ESXi主機上掛載NFSv3或NFSv4.1資料存放區：
++
+.. 若要掛載NFSv3資料存放區、請執行下列命令：
++
+《esxcli storage NFS add -H 192．168．42.80 -s share_name -v volume．name》（esxcli儲存NFS add -H 192．168．42.80 -s share_name -v volume
+
++
+若要掛載NFSv4.1資料存放區、請執行下列命令：
+
++
+「esxcli儲存設備nfs41 add -H 192.168.42.80- s share_name -v volume名稱-A auth_SYS / SEC_KRB5/SEC_KRB5I」
+
++
+以下範例顯示ONTAP 要在安裝資料存放區時執行的命令、以及產生的輸出：
+
++
+[listing]
+----
+~ # esxcfg-nas -a onc_src -o 192.168.42.80 -s /onc_src
+Connecting to NAS volume: onc_src
+/onc_src created and connected.
+----
++
+對於Data ONTAP 以7-Mode執行支援的系統、NFS Volume名稱前面會加上「/vol'」字首。以下範例顯示用於掛載資料存放區的7-Mode命令、以及產生的輸出：
+
++
+[listing]
+----
+~ # esxcfg-nas -a vms_7m -o 192.168.42.69 -s /vol/vms_7m
+Connecting to NAS volume: /vol/vms_7m
+/vol/vms_7m created and connected.
+----
+.. 若要管理NAS掛載：
++
+「esxcfg-NAS -l」
+
++
+將顯示下列輸出：
+
++
+[listing]
+----
+VMS_vol103 is /VMS_vol103 from 192.168.42.81 mounted available
+VMS_vol104 is VMS_vol104 from 192.168.42.82 mounted available
+dbench1 is /dbench1 from 192.168.42.83 mounted available
+dbench2 is /dbench2 from 192.168.42.84 mounted available
+onc_src is /onc_src from 192.168.42.80 mounted available
+----
+
+
++
+完成後、磁碟區便會掛載、並可在/vmfs/volumes目錄中使用。
+
+. [[step10]使用下列其中一種方法、驗證掛載的資料存放區是否支援VAAI：
++
+[cols="30,60"]
+|===
+| 如果您使用... | 然後... 
+
+
+ a| 
+ESXi CLI
+ a| 
+「vmkfsools -ph /vmfs/volumes/ONC_SRC/'會顯示下列輸出：
+
+[listing]
+----
+NFS-1.00 file system spanning 1 partitions.
+File system label (if any):
+onc_src Mode: public Capacity 760 MB, 36.0 MB available,
+file block size 4 KB
+UUID: fb9cccc8-320a99a6-0000-000000000000
+Partitions spanned (on "notDCS"):
+
+nfs:onc_src
+NAS VAAI Supported: YES
+Is Native Snapshot Capable: YES
+~ #
+----
+
+
+ a| 
+vSphere用戶端
+ a| 
+.. 按一下「* ESXi伺服器*>*組態*>*儲存設備*」。
+.. 檢視啟用VAAI的NFS資料存放區的Hardware Acceleration（硬體加速）欄。
+
+
+|===
++
+如需VMware vStorage over NFS的詳細資訊、請參閱下列內容：
+
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.cdot-famg-nfs/home.html["SFC 9 NFS參考總覽ONTAP"^]
+
++
+https://library.netapp.com/ecm/ecm_download_file/ECMP1401220["《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP"^]
+
++
+如需設定磁碟區和磁碟區空間的詳細資訊、請參閱下列內容：
+
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-vsmg/home.html["使用CLI進行邏輯儲存管理總覽"^]
+
++
+link:https://library.netapp.com/ecm/ecm_download_file/ECMP1368859["《適用於7-Mode的資訊儲存管理指南》（英文）Data ONTAP"^]
+
++
+如需VMware vSphere生命週期管理程式的詳細資訊、也可以使用vCenter Web用戶端GUI在多個主機上安裝及管理外掛程式、請參閱下列內容：
+
++
+link:https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere-lifecycle-manager.doc/GUID-74295A37-E8BB-4EB9-BFBA-47B78F0C570D.html["關於VMware vSphere生命週期管理程式"^]
+
++
+如需在VMware環境中使用VSC來配置NFS資料存放區及建立虛擬機器複本的相關資訊、請參閱下列內容：
+
++
+link:https://library.netapp.com/ecmdocs/ECMLP2561116/html/index.html["《Virtual Storage Console 6.2.1 for VMware vSphere安裝與管理指南》"^]
+
++
+如需更多關於使用ONTAP VMware vSphere的功能來配置NFS資料存放區及在VMware環境中建立虛擬機器複本的資訊、請參閱下列內容：
+
++
+link:https://docs.netapp.com/vapp-98/topic/com.netapp.doc.vsc-dsg/home.html["VMware vSphere文件的相關工具ONTAP"^]
+
++
+如需使用NFS資料存放區及執行複製作業的詳細資訊、請參閱下列內容：
+
++
+link:http://pubs.vmware.com/vsphere-60/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-60-storage-guide.pdf["VMware vSphere儲存設備"^]
+
+. 如果您使用Data ONTAP 以7-Mode運作的功能進行支援、請執行「顯示」命令、啟用資料存放區磁碟區以進行複本卸載和重複資料刪除。
++
+如需參考資料、請檢視Volume的效率詳細資料：ONTAP
+
++
+「Volume Effiveiv. show -vserver vserver_name -volume volume volume Volume _name」
+
++
+
+NOTE: 對於僅供使用的系統、預設會啟用Volume Eff效率。AFF AFF
+
++
+如果命令輸出未顯示任何已啟用儲存效率的磁碟區、請啟用效率：
+
++
+「-vserver vserver_name -volume volume volume volume．name」上的Volume Effiveiv
+
++
+如果您使用VSC或ONTAP VMware vSphere的支援功能來設定磁碟區、請跳過此步驟、因為預設會在資料存放區上啟用磁碟區效率。
+
++
+[listing]
+----
+sys1> volume efficiency show
+This table is currently empty.
+
+sys1> volume efficiency on -volume  testvol1
+Efficiency for volume "testvol1" of Vserver "vs1" is enabled.
+
+sys1> volume efficiency show
+Vserver    Volume           State    Status       Progress           Policy
+---------- ---------------- -------- ------------ ------------------ ----------
+vs1        testvol1         Enabled  Idle         Idle for 00:00:06  -
+----
++
+如需在資料存放區磁碟區上啟用重複資料刪除的詳細資訊、請參閱下列內容：
+
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-vsmg/home.html["使用CLI進行邏輯儲存管理總覽"^]
+
++
+https://library.netapp.com/ecm/ecm_download_file/ECMP1401220["《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP"^]
+
+
+
+使用NFS外掛程式空間保留和複本卸載功能、讓例行工作更有效率：
+
+* 在NetApp傳統Volume或FlexVol VMware Volume上以複雜的虛擬機器磁碟（VMDK）格式建立虛擬機器、並在建立時保留檔案空間。
+* 複製NetApp磁碟區內或跨NetApp磁碟區的現有虛擬機器：
++
+** 資料存放區是位於同一個節點上相同SVM上的磁碟區。
+** 資料存放區是位於不同節點上相同SVM上的磁碟區。
+** 屬於相同7-Mode系統或VFiler裝置上磁碟區的資料存放區。
+
+
+* 執行複製作業的完成速度比非VAAI複製作業快、因為它們不需要經過ESXi主機。
+
