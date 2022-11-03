@@ -22,15 +22,15 @@ NOTE: NFSv4.1僅適用於ONTAP VMware 9.0系統、NFSv3同時適用於7-Mode和C
 * VMware vSphere 7.0U1必須可供使用。
 
 
-如需啟用NFS及使用VMware vSphere的其他資訊、請參閱中所列的手冊 <<step10,步驟10>>。
+如需啟用NFS及使用VMware vSphere的其他資訊、請參閱中所列的手冊 ,步驟10。
 
 .關於這項工作
-* 如果您使用VMware ESXi CLI來安裝外掛程式、請從開始 <<step1,步驟1.>>。
-* 如果您使用適用於VMware vSphere的虛擬儲存主控台（VSC）來安裝外掛程式、請從開始 <<step3,步驟3.>>。
+* 如果您使用VMware ESXi CLI來安裝外掛程式、請從開始 ,步驟1.。
+* 如果您使用適用於VMware vSphere的虛擬儲存主控台（VSC）來安裝外掛程式、請從開始 ,步驟3.。
 +
-VSC可在儲存控制器上啟用VMware vStorage for NFS、並在ESXi主機上啟用VAAI（步驟） <<step1,1.>> 透過 <<step2,2.>> 此程序的最新資訊。
+VSC可在儲存控制器上啟用VMware vStorage for NFS、並在ESXi主機上啟用VAAI（步驟） ,1. 透過 ,2. 此程序的最新資訊。
 
-* 如果您使用ONTAP VMware vSphere的VMware解決工具來安裝外掛程式、請從開始 <<step3,步驟3.>>。
+* 如果您使用ONTAP VMware vSphere的VMware解決工具來安裝外掛程式、請從開始 ,步驟3.。
 
 
 *使用的IP位址慣例：*
