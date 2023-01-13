@@ -125,19 +125,58 @@ vSphere用戶端
 .. 下載2.0版及vSphere 7.0U1及更新版本的最新軟體版本。
 
 
-. 使用下列命令在ESXi主機上安裝外掛程式：
+. 使用簽署的映像和公開金鑰驗證二進位：
 +
-「esxcli軟體元件套用-d /<tmp>//<sare_path\>/<下載外掛程式檔案版本\>.Zip」
+.. 請將下列壓縮檔下載至 `/tmp` 資料夾：
++
+`NetAppNasPlugin-<version>.Signed.zip`
 
 +
-其中，「<sip_path>'是下載檔案位置的路徑，而「<download-plugin-file-version」是下載檔案的名稱。
+此壓縮檔包含下列檔案：
 
-. 執行下列命令以完成安裝：
++
+*** `NetAppNasPlugin-<version>.zip`
+*** `NetAppNasPlugin-<version>.zip.sig`
+*** `csc-prod-CFSG-NFS-Plugin.pem`
+
+
+.. 使用下列命令從憑證鏈取得公開金鑰：
++
+`openssl x509 -in csc-prod-CFSG-NFS-Plugin.pem -pubkey -noout > csc-prod-CFSG-NFS-Plugin.pub`
+
++
+*** `csc-prod-CFSG-NFS-Plugin.pem` 中是否存在憑證鏈結 `NetAppNasPlugin-<version>.Signed.zip`
+*** `csc-prod-CFSG-NFS-Plugin.pub` 是公開金鑰
+
+
+.. 使用公開金鑰驗證簽署的映像：
++
+`openssl dgst -sha256 -verify csc-prod-CFSG-NFS-Plugin.pub -signature /tmp/ NetAppNasPlugin-<version>.zip.sig  /tmp/NetAppNasPlugin-<version>.zip`
+
++
+如果驗證成功、則會顯示下列輸出：
+
++
+[listing]
+----
+Verified OK
+----
+
+
+. 執行下列命令、在ESXi主機上安裝外掛程式：
++
+Check Alignment of PHs>"etc/init.d/VAAI - NASD停止"
+
++
+`esxcli software component apply -d   /tmp/<some_path>/NetAppNasPlugin-<version>.zip`
+
 +
 Check Alignment of PHs>"etc/init.d/VAAA-NASD start"
 
 +
-Check Alignment of PHs>"etc/init.d/VAAI - NASD停止"
+** `<some_path>` 是下載檔案位置的路徑
+** `NetAppNasPlugin-<version>.zip` 包含在下載的壓縮檔中
+
 
 . 確認已在VMware ESXi命令列的主機上成功安裝外掛程式：
 +
