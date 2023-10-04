@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+  <head class="at-element-marker">
+  <title>安裝適用於VMware VAAI的NetApp NFS外掛程式</title>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+  <meta http-equiv="language" content="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="安裝適用於VMware VAAI的NetApp NFS外掛程式" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.netapp.com/zh-tw/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+	<meta property="og:description" content="安裝NFS外掛程式涉及在NetApp儲存系統上啟用VMware vStorage for NFS、驗證VMware主機上是否已啟用VAAI（適用於陣列整合的VMware vStorage API）、下載並安裝VMware ESXi主機上的外掛程式、以及驗證安裝是否成功。" />
+  <meta property="og:image" content="https://docs.netapp.com/zh-tw/nfs-plugin-vmware-vaai/images/logo-tophat-social.png" />
+  <meta property="og:image:alt" content="NetApp Logo" />
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="encoding" content="utf-8">
+  <meta http-equiv="nss-type" content="Product Documentation"/>
+  <meta http-equiv="nss-subtype" content="User Guide"/><meta name="description" content="安裝NFS外掛程式涉及在NetApp儲存系統上啟用VMware vStorage for NFS、驗證VMware主機上是否已啟用VAAI（適用於陣列整合的VMware vStorage API）、下載並安裝VMware ESXi主機上的外掛程式、以及驗證安裝是否成功。">
+  <meta name="keywords" content=" install, netapp, nfs, plug-in, vmware, vaai, involve, enable, netapp, vstorage, api, array, integration, installation, download, nfsv4.1"><!-- Icons -->
+  <link rel="icon" href="/zh-tw/nfs-plugin-vmware-vaai/images/favicon.ico" type="image/x-icon">
+
+  <!-- RSS Feed --><!-- CSS Definitions: NetApp CSS should be defined after generic css -->
+
+
+  <!-- Combined CSS -->
+  <link rel="stylesheet" type="text/css" href="/zh-tw/nfs-plugin-vmware-vaai/css/ie-netappdocs.css">
+
+  
+  <link rel="stylesheet" href="/zh-tw/nfs-plugin-vmware-vaai/css/ie-landing-page.css" type="text/css">
+  <link rel="stylesheet" href="/zh-tw/nfs-plugin-vmware-vaai/css/ie-tabbed-blocks.css" type="text/css">
+  <!-- Canonical url -->
+  <link rel="canonical" href="https://docs.netapp.com/zh-tw/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="x-default" href="https://docs.netapp.com/us-en/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="zh-Hant" href="https://docs.netapp.com/zh-tw/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="en" href="https://docs.netapp.com/us-en/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="ja" href="https://docs.netapp.com/ja-jp/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="ko" href="https://docs.netapp.com/ko-kr/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="zh-Hans" href="https://docs.netapp.com/zh-cn/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="de" href="https://docs.netapp.com/de-de/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="es" href="https://docs.netapp.com/es-es/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="fr" href="https://docs.netapp.com/fr-fr/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <link rel="alternate" hreflang="it" href="https://docs.netapp.com/it-it/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html" />
+  <!-- Top level site integrations -->
+<script type="text/javascript" src="https://cdn.cookielaw.org/consent/72570c5c-fe30-465f-b0e0-b77f7fb4ae34/OtAutoBlock.js"></script>
+    <script type="text/javascript" src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" charset="UTF-8" data-document-language="true" data-domain-script="72570c5c-fe30-465f-b0e0-b77f7fb4ae34"></script>
+    <script type="text/javascript">function OptanonWrapper() { }</script>
+    <script type="text/plain" class="optanon-category-C0002" src="https://assets.adobedtm.com/60287eadf1ee/c284da483c83/launch-e9ff3acac59f.min.js"></script>
+    <script class="optanon-category-C0001">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.setAttributeNode(d.createAttribute('data-ot-ignore'));j.setAttribute('class','optanon-category-C0001');j.async=true;
+        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+'';f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MD73T9M');</script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      const MASTHEAD_OFFSET = 65;
+      const SECTIONS = $("main h2, main h3");
+      // PAGE NAV - Init
+      if (SECTIONS.length == 0) {
+        // remove if there is no elements
+        /*
+        $("#ie-right-navbar").remove();
+        $("#ie-right-navbar-collapse").remove();
+        */
+      } else {
+        $(".page-nav-title").css('display', 'block');
+        for (var i = 0; i < SECTIONS.length; i++) {
+          var sectionId = $(SECTIONS[i]).attr('id');
+          var sectionName = $(SECTIONS[i]).text();
+          var subClass = $(SECTIONS[i]).is("h3") ? ' page-nav__sublink' : '';
+          $("#page-menu").append('<li class="page-nav-item"><a href="#' + sectionId + '" class="page-nav__link' + subClass + '">' + sectionName + '</a></li>');
+        }
+        $(".page-nav__link").first().addClass('page-nav__link--active');
+      }
+    });
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+  <!-- Used for Product Family Page Sidebar Visibility --><!-- Used to import Promise for IE. Required for SearchKit -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script><script src='/zh-tw/nfs-plugin-vmware-vaai/js/na-search.js'></script><script src='/zh-tw/nfs-plugin-vmware-vaai/js/ie-clouddocs.js'></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><script>
+    /*
+      $(document).ready(function() {
+          $("#tg-sb-link").click(function() {
+              $("#tg-sb-sidebar").toggle();
+              $("#tg-sb-content").toggleClass('col-md-9');
+              $("#tg-sb-content").toggleClass('col-md-12');
+              $("#tg-sb-icon").toggleClass('fa-toggle-on');
+              $("#tg-sb-icon").toggleClass('fa-toggle-off');
+          });
+      });
+      */
+  </script>
+  <script src='/zh-tw/nfs-plugin-vmware-vaai/js/custom-dropdown.js'></script>
+  <script src='/zh-tw/nfs-plugin-vmware-vaai/js/FileSaver.min.js'></script>
+  <script src='/zh-tw/nfs-plugin-vmware-vaai/js/jszip-utils.min.js'></script>
+  <script src='/zh-tw/nfs-plugin-vmware-vaai/js/jszip.min.js'></script><script src='/zh-tw/nfs-plugin-vmware-vaai/js/ie-pdf-ux.js'></script></head>
+
+
+  <body class role="document" data-flavor=""><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MD73T9M"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><div id="page" class="">
+      <div id="ie-phone-menu" class=""></div>
+      <div id="ie-content-wrap" class="">
+        <nav id="ie-new-header">
+    <ul>
+        <li id="ie-phone-menu-button">
+            <a href="#">
+                <image id="" src="/zh-tw/nfs-plugin-vmware-vaai/images/hamburger.svg" alt="menu" />
+            </a>
+        </li>
+
+        <li>
+            <a href="https://www.netapp.com/tw">
+                <image id="ie-header-logo" src="/zh-tw/nfs-plugin-vmware-vaai/images/netapp_logo.svg" alt="netapp" />
+            </a>
+        </li>
+        <li id="ie-header-docs">
+            <a href="https://www.netapp.com/support-and-training/documentation/">文件</a>
+        </li>
+
+        <!-- Empty container to push header left with or without lang selector -->
+        <li id="empty-container" style="margin-left: auto">
+        </li>
+        <!-- Start Language Selector --><li id="ie-language-dropdown">
+            <div id="language-dropdown" class="custom-dropdown custom-dropdown-lang">
+                <div class="custom-dropdown-select custom-dropdown-select-lang">
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/language_white_24dp.svg" class="n-globe__icon" />
+                    <span class="lang-name">繁體中文</span>
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" alt="" class="custom-icon chevrondown header invisible" />
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" alt="" class="custom-icon chevronup header" />
+                    </button>
+                </div>
+
+                <ul class="custom-dropdown-menu"><li>
+                        <a href="https://docs.netapp.com/zh-tw/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">繁體中文</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/us-en/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">English</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/ja-jp/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">日本語</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/ko-kr/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">한국어</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/zh-cn/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">简体中文</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/de-de/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">Deutsch</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/es-es/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">Español</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/fr-fr/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">Français</span></a>
+                    </li><li>
+                        <a href="https://docs.netapp.com/it-it/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html"
+                            target="_self"><span translate="no" class="notranslate">Italiano</span></a>
+                    </li></ul>
+            </div>
+            </li>
+        <!-- End Language Selector -->
+
+
+        <li id="ie-allnetapp">
+            <div id="allnetapp-dropdown" class="custom-dropdown custom-dropdown-allnetapp">
+                <div class="custom-dropdown-select custom-dropdown-select-allnetapp">
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/apps_white_24dp.svg" alt="" class="allnetapp-icon" />
+                    <span class="allnetapp-name">所有 NetApp</span>
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" alt="" class="custom-icon chevrondown header invisible" />
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" alt="" class="custom-icon chevronup header" />
+                    </button>
+                </div>
+
+                <ul class="custom-dropdown-menu allnetapp-dropdown">
+                    <li>
+                        <a href="https://bluexp.netapp.com/"
+                            target="_self"><span translate="no" class="notranslate">BlueXP</span></a>
+                    </li>
+                    <li>
+                        <a href="https://mysupport.netapp.com/site/"
+                            target="_self"><span translate="no" class="notranslate">支援</span></a>
+                    </li>
+                    <li>
+                        <a href="https://kb.netapp.com/"
+                            target="_self"><span translate="no" class="notranslate">知識庫</span></a>
+                    </li>
+                    <li>
+                        <a href="https://www.netapp.com/support-and-training/netapp-learning-services/"
+                            target="_self"><span translate="no" class="notranslate">訓練</span></a>
+                    </li>
+                </ul>
+            </div>
+
+        </li>
+
+    </ul>
+</nav>
+
+        <main id="n-main-content" class="n-main-content">
+          <!-- Start Documentation Content -->
+<div class="ie-main">
+
+<div id="ie-new-sidebar-collapse" style="display: none">
+    <img id="sidebar-expand" class="ie-searchbox-icon" src="/zh-tw/nfs-plugin-vmware-vaai/images/double_arrow.svg" alt="" />
+</div>
+<div id="ie-new-sidebar">
+    <div id="ie-product-identity-lockup">
+        <div id="sidebar-collapse" class="">
+            <img src="/zh-tw/nfs-plugin-vmware-vaai/images/double_arrow.svg" alt="" />
+        </div>
+        <div id="ie-breadcrumb" class="">
+  <ul class="ie-breadcrumb">
+    <li class="">
+      <a href="https://docs.netapp.com">所有文件</a>
+    </li>
+    
+    
+
+    
+  </ul>
+  
+  <div class="ie-product-name" >
+    <!--<a href="/zh-tw/nfs-plugin-vmware-vaai/">-->
+      NetApp NFS Plug-in for VMware VAAI
+    <!--</a>-->
+  </div>
+</div>
+
+            
+
+        
+        
+
+<div id="ie-searchbox" class="ie-searchbox-sidebar ">
+    <img class="ie-searchbox-icon" src="/zh-tw/nfs-plugin-vmware-vaai/images/loupe.svg" alt=""/>
+    <div id="react-search" 
+        data-search-html="/zh-tw/nfs-plugin-vmware-vaai/search.html" 
+        data-type="widget"
+        data-placeholder="搜尋說明文件"
+        data-no-results-found="找不到 {query} 的結果"
+        data-did-you-mean="搜尋 {suggestion}。"
+        data-no-results-found-did-you-mean="找不到 {query} 的結果。您的意思是 {suggestion} 嗎？"
+        data-results-found="找到 {hitCount} 個結果"
+        data-error-message="發生錯誤。請再試一次。"
+        data-error-reset="重設搜尋"
+        data-sk-es-pf-indexes="" 
+        data-flavor="">
+    </div>
+</div>
+        
+    </div>
+    <div id="ie-new-toc"><script>
+  let sidebarAccordion = true;
+
+  /* specific css rules for Mac */
+  if(navigator.platform.match('Mac') !== null) {
+    document.body.setAttribute('class', 'OSX');
+  }
+
+</script>
+
+<div id="ie-sidebar-container">
+  <ul id="ie-sidebar-list" ><li 
+      data-pdf-exists="true" 
+      data-pdf-filename="適用於VMware VAAI文件的NetApp NFS外掛程式"
+      data-li-level="1#" 
+      class="   "
+      dale-page-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+      dale-entry-url="/index.html" 
+    ><a class="ie-sidebar-menuitem-1 " href="/zh-tw/nfs-plugin-vmware-vaai/index.html">
+        適用於VMware VAAI文件的NetApp NFS外掛程式
+      </a></li><li 
+      data-pdf-exists="true" 
+      data-pdf-filename="版本資訊"
+      data-li-level="1#" 
+      class="   "
+      dale-page-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+      dale-entry-url="/releasenotes.html" 
+    ><a class="ie-sidebar-menuitem-1 " href="/zh-tw/nfs-plugin-vmware-vaai/releasenotes.html">
+        版本資訊
+      </a></li><li 
+      data-pdf-exists="true" 
+      data-pdf-filename="安裝與設定"
+      data-li-level="1" 
+      class=" sidebar-folder    "
+      dale-page-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+      dale-entry-url="" 
+    ><a class="ie-sidebar-menuitem-1  ie-sidebar-button " href="#">
+        <img class="ie-sidebar-icon ie-sidebar-button open" src="/zh-tw/nfs-plugin-vmware-vaai/images/link_expand.svg" alt="" />
+        <img class="ie-sidebar-icon ie-sidebar-button close" src="/zh-tw/nfs-plugin-vmware-vaai/images/link_collapse.svg" alt="" />
+        <!--<div class="" style="display: inline;"> 安裝與設定</div>-->
+         安裝與設定
+      </a>
+      <ul class="">
+        <li 
+      data-pdf-exists="true" 
+      data-pdf-filename="安裝適用於VMware VAAI的NetApp NFS外掛程式"
+      data-li-level="2#" 
+      class="  ie-sidebar-selected    "
+      dale-page-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+      dale-entry-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+    ><a class="ie-sidebar-menuitem-2 " href="/zh-tw/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html">
+        安裝適用於VMware VAAI的NetApp NFS外掛程式
+      </a></li><li 
+      data-pdf-exists="true" 
+      data-pdf-filename="設定ONTAP 匯出原則以供支援透過NFS的VAAI"
+      data-li-level="2#" 
+      class="   "
+      dale-page-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+      dale-entry-url="/task-configure-export-policies-for-clustered-data-ontap-to-allow-vaai-over-nfs.html" 
+    ><a class="ie-sidebar-menuitem-2 " href="/zh-tw/nfs-plugin-vmware-vaai/task-configure-export-policies-for-clustered-data-ontap-to-allow-vaai-over-nfs.html">
+        設定ONTAP 匯出原則以供支援透過NFS的VAAI
+      </a></li></ul></li><li 
+      data-pdf-exists="true" 
+      data-pdf-filename="法律聲明"
+      data-li-level="1#" 
+      class="   "
+      dale-page-url="/task-install-netapp-nfs-plugin-for-vmware-vaai.html" 
+      dale-entry-url="/reference-legal-notices.html" 
+    ><a class="ie-sidebar-menuitem-1 " href="/zh-tw/nfs-plugin-vmware-vaai/reference-legal-notices.html">
+        法律聲明
+      </a></li></ul>
+</div>
+<script>
+
+  $(".ie-sidebar-button").click(function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    expandedLI = $('li.ie-sidebar-expand')
+
+    const li = $(this).closest("li");
+
+    const parentsLI = $(li).parents('li');
+
+    expandedLI.map(element => {
+      if (sidebarAccordion && !li.hasClass('ie-sidebar-expand') && jQuery.inArray(expandedLI[element], parentsLI) == -1) {
+        $(expandedLI[element]).toggleClass('ie-sidebar-expand');
+        $(expandedLI[element]).children("ul").animate({ height: 'toggle' }, 400, function () {
+          $(li).children("ul").toggleClass('ie-sidebar-open');
+
+        })
+      }
+
+    })
+
+    $(li).toggleClass('ie-sidebar-expand');
+    $(li).children("ul").animate({ height: 'toggle' }, 400, function () {
+      $(li).children("ul").toggleClass('ie-sidebar-open');
+    })
+  });
+
+
+  
+    $("li.ie-sidebar-selected").parents('ul').toggleClass("ie-sidebar-open");
+    $("li.ie-sidebar-selected").toggleClass("ie-sidebar-expand")
+    $("ul.ie-sidebar-open").parent().toggleClass("ie-sidebar-expand");
+    $("li.ie-sidebar-selected").children('ul').toggleClass("ie-sidebar-open")
+  
+  
+</script>
+    </div>
+</div>
+<script>
+
+    
+    let sidebarScrollTopPosition = 0;
+    $("#ie-new-toc").on("scroll", function () {
+        if (sidebarScrollTopPosition == 0) {
+            $.cookie("sidebarScroll", $("#ie-new-toc").scrollTop(), {
+                path: "/zh-tw/nfs-plugin-vmware-vaai"
+            });
+        }
+
+        if ($("#ie-new-toc").scrollTop() > 0) {
+            $('#ie-product-identity-lockup').addClass('ie-addShadow');
+        } else {
+            $('#ie-product-identity-lockup').removeClass('ie-addShadow');
+        }
+    });
+
+    $(function () {
+        if ($.cookie("sidebarScroll")) {
+            $("#ie-new-toc").scrollTop($.cookie("sidebarScroll"));
+        }
+    });
+
+    function setSidebarBottom() {
+        const footerGap = PXinViewport($(".n-footer"));
+        document.getElementById("ie-new-sidebar").style.bottom = Math.max(0, footerGap) + "px";
+    }
+
+    window.onscroll = () => {
+        setSidebarBottom();
+    };
+
+    $("#sidebar-collapse").click(function (e) {
+        const sidebarWidth = $("#ie-new-sidebar").width() - $("#ie-new-sidebar-collapse").width();
+        e.preventDefault();
+        const width = $(".ie-content-pane").width();
+        const marginLeft = parseInt($(".ie-content-pane").css('marginLeft'));
+
+        if ($.cookie("sidebarScroll")) {
+            sidebarScrollTopPosition = $.cookie("sidebarScroll");
+        }
+
+        $("#ie-new-sidebar").animate({ width: 'toggle' }, 350, function () {
+            $("#ie-new-sidebar-collapse").show();
+            $("#ie-new-sidebar").removeClass("open")
+            $("#ie-new-sidebar").addClass("close")
+            $("#ie-new-sidebar").removeAttr("style")
+        });
+        $(".ie-content-pane").animate({ width: (width + sidebarWidth), marginLeft: (marginLeft - sidebarWidth) }, 350, function () {
+            resizeContent()
+        })
+
+    });
+    $("#sidebar-expand").click(function (e) {
+        const sidebarWidth = $("#ie-new-sidebar").width() - $("#ie-new-sidebar-collapse").width();
+        e.preventDefault();
+        const width = $(".ie-content-pane").width();
+        const marginLeft = parseInt($(".ie-content-pane").css('marginLeft'));
+
+        $("#ie-new-sidebar").animate({ width: 'toggle' }, 250, function () {
+            $('#ie-new-sidebar').css('display', 'flex');
+            $("#ie-new-sidebar-collapse").hide();
+            $("#ie-new-sidebar").removeClass("close")
+            $("#ie-new-sidebar").addClass("open")
+            setSidebarBottom();
+
+            if (sidebarScrollTopPosition != 0) {
+                $.cookie("sidebarScroll", sidebarScrollTopPosition, {
+                    path: "/zh-tw/nfs-plugin-vmware-vaai"
+                })
+                $("#ie-new-toc").scrollTop(sidebarScrollTopPosition);
+                sidebarScrollTopPosition = 0;
+            }
+        });
+        $(".ie-content-pane").animate({ width: (width - sidebarWidth), 'marginLeft': (marginLeft + sidebarWidth) }, 250, function () {
+            resizeContent()
+        })
+    });
+    function resizeContent() {
+        const sidebarWidth = $("#ie-new-sidebar").width() - $("#ie-new-sidebar-collapse").width();
+        const rightNavbarVisible =  $("#ie-right-navbar").css('display') && $("#ie-right-navbar").css('display') != 'none';
+        const sidebarVisible = $("#ie-new-sidebar").css('display') != 'none';
+        const rightNavbarWidth = $("#ie-right-navbar").width();
+        const rightNavbarCollapseWidth = $("#ie-right-navbar-collapse").width();
+        const rightNavbarCollapseVisible = $("#ie-right-navbar-collapse").css('display') && $("#ie-right-navbar-collapse").css('display') != 'none';
+        
+        if (rightNavbarVisible && sidebarVisible) {
+            $(".ie-content-pane").width(`calc(100% - ${sidebarWidth + rightNavbarWidth}px)`)
+            $(".ie-content-pane").css('marginLeft', `${sidebarWidth}px`)
+        } else if (sidebarVisible) {
+            $(".ie-content-pane").css('marginLeft', `${sidebarWidth}px`)
+            if (rightNavbarCollapseVisible) {
+                $(".ie-content-pane").width(`calc(100% - ${sidebarWidth + rightNavbarCollapseWidth}px)`)
+            } else {
+                $(".ie-content-pane").width(`calc(100% - ${$("#ie-new-sidebar").width()}px)`)
+            }
+
+        } else if (rightNavbarVisible) {
+            $(".ie-content-pane").css('marginLeft', `${$("#ie-new-sidebar-collapse").width()}px`)
+            $(".ie-content-pane").width(`calc(100% - ${rightNavbarWidth}px)`)
+        } else {
+            $(".ie-content-pane").css('marginLeft', `${$("#ie-new-sidebar-collapse").width()}px`)
+            if (rightNavbarCollapseVisible) {
+                $(".ie-content-pane").width(`calc(100% - ${rightNavbarCollapseWidth}px)`);
+            } else {
+                $(".ie-content-pane").width(`calc(100% - ${$("#ie-new-sidebar-collapse").width()}px) `);
+            }
+            
+        }
+    }
+    $(window).on("resize load", function () {
+        setSidebarBottom();
+        resizeContent()
+    });
+
+
+</script>
+
+<div class="ie-content-pane ie-component-detail-content ie-component-detail-content--show-code">
+    <!-- Begin of page container --><article class="page-content" id="main">
+      <!-- include utility.html -->
+      <div class="ie-info-disclaimer">
+    <span>
+      <div class="ie-info-disclaimer-container">
+        <div class="ie-info-disclaimer-icon">
+          <img src="/zh-tw/nfs-plugin-vmware-vaai/images/notification-icons.svg" class="luci-icon" alt="" />
+        </div>
+        <div class="ie-info-disclaimer-content">
+          <span> 本繁體中文版使用機器翻譯，譯文僅供參考，若與英文版本牴觸，應以英文版本為準。 </span>
+        </div>
+        <div style="clear:both;"></div>
+      </div>
+    </span>
+  </div><div class="ie-component-detail-heading-wrap">
+  <h1 class="ie-component-detail-heading">安裝適用於VMware VAAI的NetApp NFS外掛程式</h1>
+</div>
+
+<div id="ie-byline">
+  
+<div class="page-details">
+    
+        
+            <time datetime="2023-01-13 16:20:49 +0000">01/13/2023</time>
+        
+    
+    
+        <span>貢獻者
+        </span>
+    
+    
+</div>
+<div class="page-controls">
+    <div id="contribute-dropdown" class="custom-dropdown custom-dropdown-contrib" >
+        <div class="custom-dropdown-select custom-dropdown-select-contrib">
+        <span class="contrib-name"><img src="/zh-tw/nfs-plugin-vmware-vaai/images/discuss-sm.svg" alt="" class="github-icon" />建議變更</span>
+        <img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" alt="" class="custom-icon chevrondown invisible" />
+        <img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" alt="" class="custom-icon chevronup" />
+        </div>
+        <ul class="custom-dropdown-menu suggested-changes-dropdown"><li>
+                <a target="_blank" href="https://github.com/NetAppDocs/nfs-plugin-vmware-vaai.zh-tw/issues/new?template=new-from-page.yml&page-url=https://docs.netapp.com/zh-tw/nfs-plugin-vmware-vaai/task-install-netapp-nfs-plugin-for-vmware-vaai.html&page-title=安裝適用於VMware VAAI的NetApp NFS外掛程式" class="page-nav-contribute-link" role="button">請求文件變更</a>
+            </li><li> 
+                <a target="_blank" href="https://github.com/NetAppDocs/nfs-plugin-vmware-vaai/blob/main/task-install-netapp-nfs-plugin-for-vmware-vaai.adoc" class="page-nav-contribute-link" role="button">編輯本頁</a>
+            </li><li><a target="_blank" href="https://docs.netapp.com/us-en/contribute/" class="page-nav-contribute-link"  >瞭解如何貢獻</a></li>
+        </ul>
+    </div>
+    <div id="pdf-control-container">
+        <div class="n-pdf-header">
+            <a id="toggleButtonPdf" class="n-pdf-button" type="button">
+                <img class="adobe-icon" src="/zh-tw/nfs-plugin-vmware-vaai/images/pdf-icon.png" alt="" width="16" height="16"/>PDF<img src="/zh-tw/nfs-plugin-vmware-vaai/images/dropdown-arrow.svg" class="custom-icon" alt="" />
+            </a>
+        </div>
+        <div class="n-pdf-body-container">
+            <ul id="toggleContainerPdf" class="n-pdf-body" style="display:none;"><li class="pdf-ux-container">
+                    
+                    
+                    
+                    <a target="_blank" class="pdf-download-link" href="/zh-tw/nfs-plugin-vmware-vaai/pdfs/fullsite-sidebar/適用於VMware_VAAI的NetApp_NFS外掛程式文件.pdf" >
+                    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/pdf-icon.png" alt="" width="16" height="16"/>此文件 PDF 的網站</a>
+
+
+
+
+
+    
+      <ul class="subfolders" style="display:none;">
+        <li class="pdf-ux-container">
+          
+          
+          
+          <a target="_blank" class="pdf-download-link"
+            
+              href="/zh-tw/nfs-plugin-vmware-vaai/pdfs/sidebar/安裝與設定.pdf" 
+            
+          >
+            <img src="/zh-tw/nfs-plugin-vmware-vaai/images/pdf-icon.png" alt="" width="16" height="16"/>
+            安裝與設定
+          </a>
+          
+    <ul class="subfolders" id="pdf-remove" style="display:none;"><li class="active"></li></ul>
+  
+
+
+
+
+        </li>
+      </ul>
+    
+
+  
+
+
+
+</li></ul>
+            <div class="zip-pdf-link-container" style="display: none;">   
+                <a href="#" id="zipPdf">
+                <img src="/zh-tw/nfs-plugin-vmware-vaai/images/pdf-zip.png" alt="" width="16" height="16"/>
+                <pre>個別的 PDF 文件集合<span class="zip-size"></span></pre>
+                </a><div id="zip-link-popup" class="hide">
+    <div class="inner-modal">
+        <div class="downloading-progress">
+            <div class="spinner"></div>
+            <h1>Creating your file...</h1>
+            <div>This may take a few minutes. Thanks for your patience.</div>
+            <button class="cancel-download-btn" type="button">Cancel</button>
+        </div>
+        <div class="download-complete hide">
+            <div class="done-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>
+            </div>
+            <div>Your file is ready</div>
+            <button class="cancel-download-btn" type="button">OK</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(".cancel-download-btn").click(function(){
+        $("#zip-link-popup").addClass("hide");
+        $("#zip-link-popup .downloading-progress").removeClass("hide");
+        $("#zip-link-popup .download-complete").addClass("hide");
+    });
+</script></div>
+        </div>
+    </div>        
+<script>
+$("#toggleContainerPdf li.active:last-child").parents('ul.subfolders').toggle('display');
+$("#toggleButtonPdf").on('click', function(e){ 
+    e.stopPropagation();
+    $("#toggleContainerPdf").toggle('display');
+    $(".n-pdf-body-container .zip-pdf-link-container").toggle('display');
+});
+
+//hide is by clicking outside pdfcontainer
+$(document).on('click', function (e) {
+    if ($('#toggleContainerPdf').is(':visible') && !$('.n-pdf-body-container').is(e.target) && !$('.n-pdf-body-container').has(e.target).length)  {
+        
+        $("#toggleContainerPdf").toggle('display');
+        $(".n-pdf-body-container .zip-pdf-link-container").toggle('display');
+        $("#toggleButtonPdf").removeClass("active");
+    }
+});
+</script>
+<script>
+    function getPdfLocation() {
+        const pdfLocation = window.scrollX + document.querySelector('#pdf-control-container').getBoundingClientRect().left
+        if (pdfLocation < 450) {
+            $(".n-pdf-body-container").addClass("block")
+        } else {
+            $(".n-pdf-body-container").removeClass("block")
+        }
+    
+    }
+    $( window ).on( "resize", function() {
+        getPdfLocation()
+} );
+</script>
+<script>
+    const pdfButtonWidth =  $(".n-pdf-header").width();
+    const pdfMenuWidth = $(".n-pdf-body-container").width();
+    $(".n-pdf-body-container").css('margin-left', `calc(${pdfButtonWidth - pdfMenuWidth}px)`);
+</script>
+</div>
+
+    
+
+</div>
+
+<div class="paragraph lead">
+<p>安裝NFS外掛程式涉及在NetApp儲存系統上啟用VMware vStorage for NFS、驗證VMware主機上是否已啟用VAAI（適用於陣列整合的VMware vStorage API）、下載並安裝VMware ESXi主機上的外掛程式、以及驗證安裝是否成功。</p>
+</div>
+<div class="ulist">
+<div class="title">開始之前</div>
+<ul>
+<li>
+<p>必須在儲存系統上啟用NFSv3或NFSv4.1。</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="/us-en/nfs-plugin-vmware-vaai/images/note.svg" alt="註">
+</td>
+<td class="content">
+NFSv4.1僅適用於ONTAP VMware 9.0系統、NFSv3同時適用於7-Mode和Cluster-Mode系統。
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>VMware vSphere 7.0U1必須可供使用。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>如需啟用NFS及使用VMware vSphere的其他資訊、請參閱中所列的手冊 <a href="#step10">步驟10</a>。</p>
+</div>
+<div class="ulist">
+<div class="title">關於這項工作</div>
+<ul>
+<li>
+<p>如果您使用VMware ESXi CLI來安裝外掛程式、請從開始 <a href="#step1">步驟1.</a>。</p>
+</li>
+<li>
+<p>如果您使用適用於VMware vSphere的虛擬儲存主控台（VSC）來安裝外掛程式、請從開始 <a href="#step3">步驟3.</a>。</p>
+<div class="paragraph">
+<p>VSC可在儲存控制器上啟用VMware vStorage for NFS、並在ESXi主機上啟用VAAI（步驟） <a href="#step1">1.</a> 透過 <a href="#step2">2.</a> 此程序的最新資訊。</p>
+</div>
+</li>
+<li>
+<p>如果您使用ONTAP VMware vSphere的VMware解決工具來安裝外掛程式、請從開始 <a href="#step3">步驟3.</a>。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>使用的IP位址慣例：</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>格式為192．168．42．2xx的IP位址是指ESXi伺服器VMkernel連接埠。</p>
+</li>
+<li>
+<p>格式為192．168．42．6x的IP位址是指Data ONTAP 以7-Mode運作的系統。</p>
+</li>
+<li>
+<p>IP位址為192．168．42．8倍、是指ONTAP 在整個系統上的儲存虛擬機器（SVM、先前稱為vserver）。</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">步驟</div>
+<ol class="arabic">
+<li>
+<p><a id="step1"></a>啟用VMware vStorage for NFS：</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">如果您使用&#8230;&#8203;</th>
+<th class="tableblock halign-left valign-top">然後&#8230;&#8203;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>CLI ONTAP</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>在SVM上啟用VMware vStorage for NFS：「vserver NFS modify–vserver vserver_name -vStorage enabled'」是SVM的名稱。</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>7-Mode CLI</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>在儲存系統上啟用VMware vStorage for NFS：「options nfs、vStorage、enable on」</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>適用於vFiler單元的7-Mode CLI</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>在MultiStore 託管VMware NFS資料存放區的VMware vCenter檔案管理器單元上安裝NetApp NFS外掛式vStorage for NFS：「vFiler執行vFiler_name選項nfs.vStorage.enable on」</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><a id="step2"></a>確認每個ESXi主機上已啟用VAAI。</p>
+<div class="paragraph">
+<p>在VMware vSphere 5.0及更新版本中、VAAI預設為啟用。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">如果您使用&#8230;&#8203;</th>
+<th class="tableblock halign-left valign-top">然後&#8230;&#8203;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>VMware ESXi CLI</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>驗證是否已啟用VAAI：「esxcfg-advcfg -g /DataMover / HardwareAcceleratedMove」（esxcfg-advcfg -g /DataMover / HardwareAcceleratedInit）</p>
+<div class="paragraph">
+<p>如果啟用VAAI、這些命令會顯示下列輸出：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>~ #  esxcfg-advcfg -g /DataMover/HardwareAcceleratedMove
+Value of HardwareAcceleratedMove is **1**
+~ # esxcfg-advcfg -g /DataMover/HardwareAcceleratedInit
+Value of HardwareAcceleratedInit is **1**</pre>
+</div>
+</div>
+</li>
+<li>
+<p>如果未啟用VAAI、請啟用VAAI：「esxcfg-advcfg -s 1 /DataMover / HardwareAcceleratedInit」「esxcfg-advcfg -s 1 /DataMover / HardwareAcceleratedMove Move」</p>
+<div class="paragraph">
+<p>這些命令會顯示下列輸出：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>~ # esxcfg-advcfg -s 1 /DataMover/HardwareAcceleratedInit
+Value of HardwareAcceleratedInit is **1**
+~ #  esxcfg-advcfg -s 1 /DataMover/HardwareAcceleratedMove
+Value of HardwareAcceleratedMove is **1**</pre>
+</div>
+</div>
+</li>
+</ol>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>vSphere用戶端</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>登入vCenter Server。</p>
+</li>
+<li>
+<p>針對每個ESXi伺服器、按一下伺服器名稱。</p>
+</li>
+<li>
+<p>在「組態」索引標籤的「軟體」區段中、按一下「<strong>進階設定</strong>」。</p>
+</li>
+<li>
+<p>選取* DataMover *、然後確認「DataMover」、「HardwareAcceleratedMove」和「Data Mover」參數設定為1。</p>
+</li>
+</ol>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>[[step3]下載適用於VMware VAAI的NetApp NFS外掛程式：</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>請前往下載頁面、網址為 <a href="https://mysupport.netapp.com/site/products/all/details/nfsplugin-vmware-vaai/downloads-tab" target="_blank" rel="noopener">"適用於VMware VAAI的NetApp NFS外掛程式下載"</a>。</p>
+</li>
+<li>
+<p>下載2.0版及vSphere 7.0U1及更新版本的最新軟體版本。</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>使用簽署的映像和公開金鑰驗證二進位：</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>請將下列壓縮檔下載至 <code>/tmp</code> 資料夾：</p>
+<div class="paragraph">
+<p><code>NetAppNasPlugin-&lt;version&gt;.Signed.zip</code></p>
+</div>
+<div class="paragraph">
+<p>此壓縮檔包含下列檔案：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>NetAppNasPlugin-&lt;version&gt;.zip</code></p>
+</li>
+<li>
+<p><code>NetAppNasPlugin-&lt;version&gt;.zip.sig</code></p>
+</li>
+<li>
+<p><code>csc-prod-CFSG-NFS-Plugin.pem</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>使用下列命令從憑證鏈取得公開金鑰：</p>
+<div class="paragraph">
+<p><code>openssl x509 -in csc-prod-CFSG-NFS-Plugin.pem -pubkey -noout &gt; csc-prod-CFSG-NFS-Plugin.pub</code></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>csc-prod-CFSG-NFS-Plugin.pem</code> 中是否存在憑證鏈結 <code>NetAppNasPlugin-&lt;version&gt;.Signed.zip</code></p>
+</li>
+<li>
+<p><code>csc-prod-CFSG-NFS-Plugin.pub</code> 是公開金鑰</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>使用公開金鑰驗證簽署的映像：</p>
+<div class="paragraph">
+<p><code>openssl dgst -sha256 -verify csc-prod-CFSG-NFS-Plugin.pub -signature /tmp/ NetAppNasPlugin-&lt;version&gt;.zip.sig  /tmp/NetAppNasPlugin-&lt;version&gt;.zip</code></p>
+</div>
+<div class="paragraph">
+<p>如果驗證成功、則會顯示下列輸出：</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Verified OK</pre>
+</div>
+</div>
+</li>
+<li>
+<p>執行下列命令、在ESXi主機上安裝外掛程式：</p>
+<div class="paragraph">
+<p>Check Alignment of PHs&gt;"etc/init.d/VAAI - NASD停止"</p>
+</div>
+<div class="paragraph">
+<p><code>esxcli software component apply -d   /tmp/&lt;some_path&gt;/NetAppNasPlugin-&lt;version&gt;.zip</code></p>
+</div>
+<div class="paragraph">
+<p>Check Alignment of PHs&gt;"etc/init.d/VAAA-NASD start"</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;some_path&gt;</code> 是下載檔案位置的路徑</p>
+</li>
+<li>
+<p><code>NetAppNasPlugin-&lt;version&gt;.zip</code> 包含在下載的壓縮檔中</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>確認已在VMware ESXi命令列的主機上成功安裝外掛程式：</p>
+<div class="paragraph">
+<p>《esxcli軟體元件清單》</p>
+</div>
+<div class="paragraph">
+<p>外掛程式會在安裝及重新開機後自動運作。</p>
+</div>
+<div class="paragraph">
+<p>使用這些命令可確保元件與vSphere的全新vLCM功能保持相容、此功能可從7.0x及更新版本取得。</p>
+</div>
+</li>
+<li>
+<p>如果您要在新的主機系統上安裝外掛程式、或ONTAP 是執行VMware的伺服器已新設定、請在使用VAAI的ESXi伺服器上、為根磁碟區和每個NFS資料存放區磁碟區建立或修改匯出原則規則 <a href="task-configure-export-policies-for-clustered-data-ontap-to-allow-vaai-over-nfs.html">"設定ONTAP 匯出原則以供支援透過NFS的VAAI"</a>。</p>
+<div class="paragraph">
+<p>如果您使用Data ONTAP 以7-Mode運作的功能、請跳過此步驟。</p>
+</div>
+<div class="paragraph">
+<p>您可以使用匯出原則、將對磁碟區的存取限制在特定用戶端。VAAI複本卸載作業的匯出原則需要NFSv4、因此您可能需要修改SVM上資料存放區磁碟區的匯出原則規則。如果您在資料存放區上使用NFS以外的傳輸協定、請確認在匯出規則中設定NFS並不會移除其他傳輸協定。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">如果您使用&#8230;&#8203;</th>
+<th class="tableblock halign-left valign-top">然後&#8230;&#8203;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>CLI ONTAP</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>針對使用VAAI的ESXi伺服器、將「NFS」設定為每個匯出原則規則的存取傳輸協定：「vserver匯出原則規則modify -vserver VS1 -policyname MyPolicy -rueindex 1 -傳輸協定NFS -rwrwrRule krb5</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">krb5i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">any -rorrorrule krb5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">krb5i」</p>
+<p class="tableblock">在下列範例中：</p>
+<p class="tableblock"><strong> 《VS1》是SVM的名稱。
+</strong> 「輸入」是匯出原則的名稱。
+<strong> 「1」是規則的索引編號。
+</strong> 「NFS」包括NFSv3和NFSv3傳輸協定。
+** RO（唯讀）和RW（讀寫）的安全樣式為krb5、krb5i或any。
++
+[listing]
+----
+cluster1::&gt; vserver export-policy rule modify -vserver vs1
+-policyname mypolicy -ruleindex 1 -protocol nfs -rwrule krb5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">krb5i</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">any -rorule krb5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">krb5i</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">any
+----</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>系統管理程式ONTAP</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>如果您使用Data ONTAP 以7-Mode運作的功能、請執行「exportfs」命令以匯出Volume路徑。</p>
+<div class="paragraph">
+<p>如果您使用ONTAP 的是資訊技術、請跳過此步驟。</p>
+</div>
+<div class="paragraph">
+<p>如需「exportfs」命令的詳細資訊、請參閱 <a href="https://library.netapp.com/ecm/ecm_download_file/ECMP1401220" target="_blank" rel="noopener">"《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP"</a>。</p>
+</div>
+<div class="paragraph">
+<p>匯出磁碟區時、您可以指定主機名稱或IP位址、子網路或網路群組。您可以為「RW」和「root」選項指定IP位址、子網路或主機。例如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sys1&gt; exportfs -p root=192.168.42.227 /vol/VAAI</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>您也可以擁有以分號分隔的清單。例如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sys1&gt; exportfs -p root=192.168.42.227:192.168.42.228 /vol/VAAI</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果您匯出具有實際旗標的Volume、匯出路徑應具有單一元件、以便正常運作複本卸載。例如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sys1&gt; exportfs -p actual=/vol/VAAI,root=192.168.42.227 /VAAI-ALIAS</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="/us-en/nfs-plugin-vmware-vaai/images/note.svg" alt="註">
+</td>
+<td class="content">
+複本卸載不適用於多重元件匯出路徑。
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>在ESXi主機上掛載NFSv3或NFSv4.1資料存放區：</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>若要掛載NFSv3資料存放區、請執行下列命令：</p>
+<div class="paragraph">
+<p>《esxcli storage NFS add -H 192．168．42.80 -s share_name -v volume．name》（esxcli儲存NFS add -H 192．168．42.80 -s share_name -v volume</p>
+</div>
+<div class="paragraph">
+<p>若要掛載NFSv4.1資料存放區、請執行下列命令：</p>
+</div>
+<div class="paragraph">
+<p>「esxcli儲存設備nfs41 add -H 192.168.42.80- s share_name -v volume名稱-A auth_SYS / SEC_KRB5/SEC_KRB5I」</p>
+</div>
+<div class="paragraph">
+<p>以下範例顯示ONTAP 要在安裝資料存放區時執行的命令、以及產生的輸出：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>~ # esxcfg-nas -a onc_src -o 192.168.42.80 -s /onc_src
+Connecting to NAS volume: onc_src
+/onc_src created and connected.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>對於Data ONTAP 以7-Mode執行支援的系統、NFS Volume名稱前面會加上「/vol'」字首。以下範例顯示用於掛載資料存放區的7-Mode命令、以及產生的輸出：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>~ # esxcfg-nas -a vms_7m -o 192.168.42.69 -s /vol/vms_7m
+Connecting to NAS volume: /vol/vms_7m
+/vol/vms_7m created and connected.</pre>
+</div>
+</div>
+</li>
+<li>
+<p>若要管理NAS掛載：</p>
+<div class="paragraph">
+<p>「esxcfg-NAS -l」</p>
+</div>
+<div class="paragraph">
+<p>將顯示下列輸出：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>VMS_vol103 is /VMS_vol103 from 192.168.42.81 mounted available
+VMS_vol104 is VMS_vol104 from 192.168.42.82 mounted available
+dbench1 is /dbench1 from 192.168.42.83 mounted available
+dbench2 is /dbench2 from 192.168.42.84 mounted available
+onc_src is /onc_src from 192.168.42.80 mounted available</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>完成後、磁碟區便會掛載、並可在/vmfs/volumes目錄中使用。</p>
+</div>
+</li>
+<li>
+<p>[[step10]使用下列其中一種方法、驗證掛載的資料存放區是否支援VAAI：</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">如果您使用&#8230;&#8203;</th>
+<th class="tableblock halign-left valign-top">然後&#8230;&#8203;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>ESXi CLI</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>「vmkfsools -ph /vmfs/volumes/ONC_SRC/'會顯示下列輸出：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NFS-1.00 file system spanning 1 partitions.
+File system label (if any):
+onc_src Mode: public Capacity 760 MB, 36.0 MB available,
+file block size 4 KB
+UUID: fb9cccc8-320a99a6-0000-000000000000
+Partitions spanned (on "notDCS"):
+
+nfs:onc_src
+NAS VAAI Supported: YES
+Is Native Snapshot Capable: YES
+~ #</pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>vSphere用戶端</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>按一下「* ESXi伺服器*&gt;*組態*&gt;*儲存設備*」。</p>
+</li>
+<li>
+<p>檢視啟用VAAI的NFS資料存放區的Hardware Acceleration（硬體加速）欄。</p>
+</li>
+</ol>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>如需VMware vStorage over NFS的詳細資訊、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="http://docs.netapp.com/ontap-9/topic/com.netapp.doc.cdot-famg-nfs/home.html" target="_blank" rel="noopener">"SFC 9 NFS參考總覽ONTAP"</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://library.netapp.com/ecm/ecm_download_file/ECMP1401220" target="_blank" rel="noopener">"《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP"</a></p>
+</div>
+<div class="paragraph">
+<p>如需設定磁碟區和磁碟區空間的詳細資訊、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="http://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-vsmg/home.html" target="_blank" rel="noopener">"使用CLI進行邏輯儲存管理總覽"</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://library.netapp.com/ecm/ecm_download_file/ECMP1368859" target="_blank" rel="noopener">"《適用於7-Mode的資訊儲存管理指南》（英文）Data ONTAP"</a></p>
+</div>
+<div class="paragraph">
+<p>如需VMware vSphere生命週期管理程式的詳細資訊、也可以使用vCenter Web用戶端GUI在多個主機上安裝及管理外掛程式、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere-lifecycle-manager.doc/GUID-74295A37-E8BB-4EB9-BFBA-47B78F0C570D.html" target="_blank" rel="noopener">"關於VMware vSphere生命週期管理程式"</a></p>
+</div>
+<div class="paragraph">
+<p>如需在VMware環境中使用VSC來配置NFS資料存放區及建立虛擬機器複本的相關資訊、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="https://library.netapp.com/ecmdocs/ECMLP2561116/html/index.html" target="_blank" rel="noopener">"《Virtual Storage Console 6.2.1 for VMware vSphere安裝與管理指南》"</a></p>
+</div>
+<div class="paragraph">
+<p>如需更多關於使用ONTAP VMware vSphere的功能來配置NFS資料存放區及在VMware環境中建立虛擬機器複本的資訊、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.netapp.com/vapp-98/topic/com.netapp.doc.vsc-dsg/home.html" target="_blank" rel="noopener">"VMware vSphere文件的相關工具ONTAP"</a></p>
+</div>
+<div class="paragraph">
+<p>如需使用NFS資料存放區及執行複製作業的詳細資訊、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="http://pubs.vmware.com/vsphere-60/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-60-storage-guide.pdf" target="_blank" rel="noopener">"VMware vSphere儲存設備"</a></p>
+</div>
+</li>
+<li>
+<p>如果您使用Data ONTAP 以7-Mode運作的功能進行支援、請執行「顯示」命令、啟用資料存放區磁碟區以進行複本卸載和重複資料刪除。</p>
+<div class="paragraph">
+<p>如需參考資料、請檢視Volume的效率詳細資料：ONTAP</p>
+</div>
+<div class="paragraph">
+<p>「Volume Effiveiv. show -vserver vserver_name -volume volume volume Volume _name」</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="/us-en/nfs-plugin-vmware-vaai/images/note.svg" alt="註">
+</td>
+<td class="content">
+對於僅供使用的系統、預設會啟用Volume Eff效率。AFF AFF
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如果命令輸出未顯示任何已啟用儲存效率的磁碟區、請啟用效率：</p>
+</div>
+<div class="paragraph">
+<p>「-vserver vserver_name -volume volume volume volume．name」上的Volume Effiveiv</p>
+</div>
+<div class="paragraph">
+<p>如果您使用VSC或ONTAP VMware vSphere的支援功能來設定磁碟區、請跳過此步驟、因為預設會在資料存放區上啟用磁碟區效率。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sys1&gt; volume efficiency show
+This table is currently empty.
+
+sys1&gt; volume efficiency on -volume  testvol1
+Efficiency for volume "testvol1" of Vserver "vs1" is enabled.
+
+sys1&gt; volume efficiency show
+Vserver    Volume           State    Status       Progress           Policy
+---------- ---------------- -------- ------------ ------------------ ----------
+vs1        testvol1         Enabled  Idle         Idle for 00:00:06  -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如需在資料存放區磁碟區上啟用重複資料刪除的詳細資訊、請參閱下列內容：</p>
+</div>
+<div class="paragraph">
+<p><a href="http://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-vsmg/home.html" target="_blank" rel="noopener">"使用CLI進行邏輯儲存管理總覽"</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://library.netapp.com/ecm/ecm_download_file/ECMP1401220" target="_blank" rel="noopener">"《適用於7-Mode的資訊、資料存取與通訊協定管理指南》（英文）Data ONTAP"</a></p>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<div class="title">完成後</div>
+<p>使用NFS外掛程式空間保留和複本卸載功能、讓例行工作更有效率：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>在NetApp傳統Volume或FlexVol VMware Volume上以複雜的虛擬機器磁碟（VMDK）格式建立虛擬機器、並在建立時保留檔案空間。</p>
+</li>
+<li>
+<p>複製NetApp磁碟區內或跨NetApp磁碟區的現有虛擬機器：</p>
+<div class="ulist">
+<ul>
+<li>
+<p>資料存放區是位於同一個節點上相同SVM上的磁碟區。</p>
+</li>
+<li>
+<p>資料存放區是位於不同節點上相同SVM上的磁碟區。</p>
+</li>
+<li>
+<p>屬於相同7-Mode系統或VFiler裝置上磁碟區的資料存放區。</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>執行複製作業的完成速度比非VAAI複製作業快、因為它們不需要經過ESXi主機。</p>
+</li>
+</ul>
+</div>
+
+    </article>
+    <!-- Page Container -->
+  </div>
+
+  
+  <!-- Start Page Toolbar -->
+<div id="ie-right-navbar-collapse" class="close">
+  <img id="navbar-expand" class="ie-searchbox-icon" src="/zh-tw/nfs-plugin-vmware-vaai/images/double_arrow.svg" alt="" />
+</div>
+<div id="ie-right-navbar" class="open">
+  <div id="right-navbar-collapse">
+    <img src="/zh-tw/nfs-plugin-vmware-vaai/images/double_arrow.svg" alt="" />
+  </div>
+  <div class="page-nav-container">
+    <nav class="page-nav-fixed">
+      <div class="page-nav-title">在本頁</div>
+      <div class="page-nav-links">
+        <ul class="page-nav-inner" id="page-menu"></ul>
+      </div>
+    </nav>
+  </div>
+</div>
+
+
+<script>
+  resizeContent();
+  function setRightBarHeight() {
+    var h = 0;
+
+    // header 1
+    h += PXinViewport($('.n-footer'));
+    h += PXinViewport($('#ie-new-header'));
+
+    if ($('#ie-right-navbar').length) {
+      $('#ie-right-navbar').css({ height: `calc(100vh - ${h}px)` });
+    }
+    if ($('.page-nav-links').length) {
+      h += 98;
+      $('.page-nav-links').css({ height: `calc(100vh - ${h}px)` });
+    }
+  }
+
+  $(document).ready(function () {
+    // PAGE NAV - Click
+    const MASTHEAD_OFFSET = 65;
+    const SECTIONS = $("main h2, main h3");
+    let calculateActiveSection = false;
+    setTimeout(() => {
+      calculateActiveSection = true;
+    }, 100)
+
+    $(".page-nav__link").click(function (event) {
+      calculateActiveSection = false;
+      $(".page-nav__link").removeClass('page-nav__link--active');
+      var target = $(event.target);
+      target.addClass('page-nav__link--active');
+      location.hash = event.target.hash;
+      setTimeout(() => {
+        calculateActiveSection = true;
+      }, 100)
+
+    });
+
+    // PAGE NAV - Scroll
+    $(window).on('resize scroll', function () {
+      if (calculateActiveSection) {
+        var activeSection = getActiveSection(SECTIONS, MASTHEAD_OFFSET);
+        if (activeSection) {
+          var activeHref = $(activeSection).attr('id');
+          $(".page-nav__link").removeClass('page-nav__link--active');
+          $("#page-menu a[href=#" + activeHref + "]").addClass('page-nav__link--active');
+          if (location.hash != "#" + activeHref) {
+            if (history.replaceState) {
+              history.replaceState(null, null, "#" + activeHref);
+            }
+          }
+        }
+      }
+    });
+
+    $(".n-pdf-button").click(function () {
+      $(this).toggleClass("active");
+    });
+
+    $.fn.isVisibleAndInViewport = function () {
+      var elementTop = $(this).offset().top;
+      var elementBottom = elementTop + $(this).outerHeight();
+
+      var viewportTop = $(window).scrollTop();
+      var viewportBottom = viewportTop + $(window).height();
+
+      return elementBottom > viewportTop && elementTop < viewportBottom && $(this).is(":visible");
+    };
+
+
+    $(window).on('resize scroll', function () {
+      setRightBarHeight();
+    });
+
+    $(window).trigger('resize');
+
+
+  });
+
+  $("#right-navbar-collapse").click(function (e) {
+    const rightNavbarWidth = $("#ie-right-navbar").width() - $("#ie-right-navbar-collapse").width();
+    e.preventDefault();
+    const width = $(".ie-content-pane").width();
+
+    $("#ie-right-navbar").animate({ width: 'toggle' }, 350, function () {
+      $("#ie-right-navbar-collapse").removeClass("close")
+      $("#ie-right-navbar-collapse").addClass("open")
+      $("#ie-right-navbar").removeClass("open")
+      $("#ie-right-navbar").addClass("close")
+    });
+    $(".ie-content-pane").animate({ width: (width + rightNavbarWidth) }, 350, function () {
+      resizeContent()
+      setSidebarBottom();
+    })
+
+  });
+  $("#navbar-expand").click(function (e) {
+    const rightNavbarWidth = $("#ie-right-navbar").width() - $("#ie-right-navbar-collapse").width();
+    e.preventDefault();
+    const width = $(".ie-content-pane").width();
+    $("#ie-right-navbar").animate({ width: 'toggle' }, 250, function () {
+      $("#ie-right-navbar-collapse").removeClass("open")
+      $("#ie-right-navbar-collapse").addClass("close")
+      $("#ie-right-navbar").removeClass("close")
+      $("#ie-right-navbar").addClass("open")
+      setRightBarHeight();
+      setSidebarBottom();
+    });
+    $(".ie-content-pane").animate({ width: (width - rightNavbarWidth) }, 250, function () {
+      resizeContent()
+    })
+  });
+
+  function navbarResize() {
+    const rightNavbarResized = $("#ie-right-navbar-collapse").hasClass('resized');
+    if (window.innerWidth < 1024) {
+      $("#ie-right-navbar").removeClass("open")
+      $("#ie-right-navbar").addClass("close")
+      $("#ie-right-navbar").removeAttr("style")
+      $("#ie-right-navbar-collapse").removeClass("close")
+      $("#ie-right-navbar-collapse").addClass("open")
+      $("#ie-right-navbar-collapse").addClass("resized")
+    } else {
+      if (rightNavbarResized) {
+        $('#ie-right-navbar').removeClass('close');
+        $('#ie-right-navbar').addClass('open');
+        $("#ie-right-navbar-collapse").removeClass("resized")
+        $("#ie-right-navbar-collapse").removeClass("open")
+        $("#ie-right-navbar-collapse").addClass("close")
+      }
+    }
+    resizeContent()
+  }
+  navbarResize();
+  $(window).on('resize load', function () {
+    navbarResize()
+  });
+
+  function getActiveSection(sections, offset) {
+    var scrollPosition = $(window).scrollTop() + offset + 5;
+    var activeSection;
+    for (var i = 0; i < sections.length; i++) {
+      var el = $(sections[i]);
+      var activePosition = el.offset().top;
+      if (activePosition > scrollPosition) {
+        break;
+      }
+
+      activeSection = sections[i];
+    }
+
+    return activeSection;
+  }
+
+  $("a[href*=#]:not([href=#])").click(function () {
+    setTimeout(() => {
+      $(window).trigger('scroll');
+    }, 105)
+  })
+
+  const hashOnLoad = location.href.split("#")[1];
+  setTimeout(function () {
+    if (hashOnLoad) {
+      $(".page-nav__link").removeClass('page-nav__link--active');
+      $("#page-menu a[href=#" + hashOnLoad + "]").addClass('page-nav__link--active');
+    }
+  }, 100)
+
+</script>
+
+
+  <div style="clear: both"></div><!-- Main needs to have height --></div>
+
+        </main>
+
+        <footer class="n-footer">
+  <div class="n-footer__bottom">
+    <div class="n-container">
+        <div class="n-footer__left">
+          <li class="n-footer__copyright-link">
+                    <a href="https://www.netapp.com/company/legal/copyright/">© 2023 NetApp, Inc.</a>
+          </li>
+        </div>
+        <div class="n-footer__center">
+          <ul class="n-footer__copyright-list">
+            <li class="n-footer__copyright-link">
+              <a href="https://www.netapp.com/company/legal/terms-of-use/">使用條款</a>
+            </li>
+            <li class="n-footer__copyright-link">
+              <a href="https://www.netapp.com/company/legal/privacy-policy/">隱私權政策</a>
+            </li>
+            <li class="n-footer__copyright-link">
+              <a href="https://www.netapp.com/company/legal/cookie-policy/">Cookie 政策</a>
+            </li>
+            <li class="n-footer__copyright-link">
+              <a class="ot-sdk-show-settings">Cookie 設定</a>
+            </li>
+          </ul>
+       </div>
+        <div class="n-footer__right">
+              <li class="n-footer__copyright-link">
+                <a target="_self" href="javascript:netapp_mailto()">傳送有關本網頁的意見反應</a>
+              </li>
+        </div>
+     </div>
+  </div>
+</footer>
+
+      </div><!-- Elasticsearch JS -->
+      <script type="text/javascript" src='/zh-tw/nfs-plugin-vmware-vaai/js/bundle.js'></script>
+
+      <!-- Syntax Highlighting -->
+      <script type="text/javascript" src='/zh-tw/nfs-plugin-vmware-vaai/js/prism.js'></script>
+      <script type="text/javascript" src='/zh-tw/nfs-plugin-vmware-vaai/js/prism-curl.js'></script>
+    </div>
+    <script>
+      document.body.offsetWidth=1903;
+      cookieLaw = {}
+      cookieLaw.euCountry = "US";
+      cookieLaw.invoke = function(){return false;}
+    </script>
+    <script src='/zh-tw/nfs-plugin-vmware-vaai/js/ie-tabbed-blocks.js'></script>
+    <script src='/zh-tw/nfs-plugin-vmware-vaai/js/ie-sidebar.js'></script>
+  </body>
+
+</html>
