@@ -20,4 +20,4 @@ sidebar:
     - title: 設定ONTAP 匯出原則以供支援透過NFS的VAAI
       url: "/task-configure-export-policies-for-clustered-data-ontap-to-allow-vaai-over-nfs.html"
   - title: 法律聲明
-    url: "/reference-legal-notices.html"
+    url: "/legal-notices.html"
