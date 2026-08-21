@@ -159,7 +159,6 @@
   <block id="7ebb78c9ff6537bf758fcaf4454224fb" category="paragraph"><block ref="7ebb78c9ff6537bf758fcaf4454224fb" category="inline-link-macro-rx"></block></block>
   <block id="47ae61fb7877ca4ff133394b75bbec70" category="paragraph">如需使用NFS資料存放區及執行複製作業的詳細資訊、請參閱下列內容：</block>
   <block id="b13dcdadb494dbca247bd930b7d1cd96" category="inline-link-macro">VMware vSphere儲存設備</block>
-  <block id="23824440fc7fb7db9a130560bbb0f369" category="paragraph"><block ref="23824440fc7fb7db9a130560bbb0f369" category="inline-link-macro-rx"></block></block>
   <block id="6197846c485d1298a47650886df4fd1c" category="list-text">如果您使用Data ONTAP 以7-Mode運作的功能進行支援、請執行「顯示」命令、啟用資料存放區磁碟區以進行複本卸載和重複資料刪除。</block>
   <block id="cd950bbb6ad069b72e227946d088f103" category="paragraph">如需參考資料、請檢視Volume的效率詳細資料：ONTAP</block>
   <block id="9502ad25405d9e7a6e956b85b44e2b67" category="paragraph">「Volume Effiveiv. show -vserver vserver_name -volume volume volume Volume _name」</block>
@@ -220,4 +219,5 @@
   <block id="8acb58cbd50ef1b468a020ee0bd351d3" category="inline-link-macro"><block ref="8acb58cbd50ef1b468a020ee0bd351d3" category="inline-link-rx"></block></block>
   <block id="2352c4e1f4d0024ade0869e00e6243f4" category="paragraph"><block ref="2352c4e1f4d0024ade0869e00e6243f4" category="inline-link-macro-rx"></block></block>
   <block id="c0227cef6f07a8cd2ac72f2945b031aa" category="section-title">開放原始碼</block>
+  <block id="696c9f90cd1e53238d0ed4d4258f4677" category="paragraph"><block ref="696c9f90cd1e53238d0ed4d4258f4677" category="inline-link-macro-rx"></block></block>
 </blocks>
