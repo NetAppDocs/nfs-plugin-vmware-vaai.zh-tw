@@ -1,4 +1,5 @@
 ---
+jekyll: serp-header
 settings:
   name: NetApp NFS Plug-in for VMware VAAI
   internal:
